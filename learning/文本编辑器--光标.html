@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title></title>
+</head>
+<body>
+	<canvas id="canvas" width="1024" height="640"></canvas>
+</body>
+<script type="text/javascript" src="js/textCursor.js"></script>
+<script type="text/javascript">
+	var cvs = document.getElementById("canvas"),
+		ctx = cvs.getContext("2d"),
+
+		blinkingInterval,
+		BLINK_ON = 700,
+		BLINK_OFF = 300,
+
+		drawingSurfaceImageData,
+		cursor = new TextCursor();
+
+// Functions...........................................................................
+
+	function blinkCursor(loc){
+		blinkingInterval = setInterval(function(e){
+			cursor.erase(ctx, drawingSurfaceImageData);
+
+			setTimeout(function(e){
+				cursor.draw(ctx, cursor.left, cursor.top + cursor.getHeight(ctx));
+			}, BLINK_OFF);
+		}, BLINK_ON + BLINK_OFF);
+	}
+
+	function saveDrawingSurface(){
+		drawingSurfaceImageData = ctx.getImageData(0, 0, cvs.width, cvs.height);
+	}
+
+	function moveCursor(loc){
+		cursor.erase(ctx, drawingSurfaceImageData);
+		cursor.draw(ctx, loc.x, loc.y);
+
+		if(!blinkingInterval){
+			blinkCursor(loc);
+		}
+	}
+
+	function windowToCanvas(x, y){
+		var bbox = cvs.getBoundingClientRect();
+		return {
+			x: (x - bbox.left) * (cvs.width / bbox.width),
+			y: (y - bbox.top) * (cvs.height / bbox.height)
+		};
+	}
+
+	cvs.onmousedown = function(e){
+		var loc = windowToCanvas(e.clientX, e.clientY);
+		moveCursor(loc);
+	};
+
+// Initialization....................................................................................
+
+	saveDrawingSurface();
+</script>
+</html>

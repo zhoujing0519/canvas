@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+	<title></title>
+	<style type="text/css">
+		body{
+			background: rgba(100, 145, 250, 0.1);
+		}
+
+		#scaleSlider{
+			vertical-align: 10px;
+			width: 100px;
+			margin-left: 90px;
+		}
+		#canvas{
+			margin: 10px 20px 0px 20px;
+			border: thin solid #aaa;
+			cursor: crosshair;
+		}
+		#controls{
+			margin-left: 15px;
+			padding: 0;
+		}
+		#scaleOutput{
+			position: absolute;
+			width: 60px;
+			height: 30px;
+			margin-left: 10px;
+			vertical-align: center;
+			text-align: center;
+			color: blue;
+			font: 18px Arial;
+			text-shadow: 2px 2px 4px rgba(100, 140, 250, 0.8);
+		}
+	</style>
+</head>
+<body>
+
+	<div id="controls">
+		<input type="reset" id="btn-reset">
+	</div>
+
+	<canvas id="canvas" width="800" height="520"></canvas>
+</body>
+<script type="text/javascript">
+	var cvs = document.getElementById("canvas"),
+		ctx = cvs.getContext("2d"),
+
+		btnReset = document.getElementById("btn-reset"),
+		image = new Image(),
+		imageData,
+		imageDataCopy = ctx.createImageData(cvs.width, cvs.height),
+
+		mousedown = {},
+		rubberbandRectangle = {},
+		dragging = false;
+
+// Functions.........................................................
+	
+	function windowToCanvas(x, y){
+		var box = cvs.getBoundingClientRect();
+
+		return {
+			x: (x - box.left) * (cvs.width / box.width),
+			y: (y - box.top) * (cvs.height / box.height)
+		};
+	}
+
+	// 复制图像像素值，并修改alpha值为原来的一半
+	function copyCanvasPixels(){
+		var i = 0;
+
+		// Copy red, green, blue components of the first pixel
+		for(i = 0; i < 3; i++){
+			imageDataCopy.data[i] = imageData.data[i];
+		}
+
+		// Starting with the alpha component of the first pixel
+		// copy imageData, and make the copy more transparent
+		for(i = 3; i < imageData.data.length - 4; i += 4){
+			imageDataCopy.data[i] = imageData.data[i] / 2; //alpha
+			imageDataCopy.data[i + 1] = imageData.data[i + 1]; //red
+			imageDataCopy.data[i + 2] = imageData.data[i + 2]; //green
+			imageDataCopy.data[i + 3] = imageData.data[i + 3]; //blue
+		}
+	}
+
+	// 捕获canvas像素，并修改alpha
+	function captureCanvasPixels(){
+		imageData = ctx.getImageData(0, 0, cvs.width, cvs.height);
+		copyCanvasPixels();
+	}
+
+	// 还原图像
+	function restoreRubberbandPixels(){
+
+		var deviceWidthOverCSSPixels = imageData.width / cvs.width,
+			deviceHeightOverCSSPixels = imageData.height / cvs.height;
+
+		// Restore the canvas to what it looked like when the mouse went down
+
+		ctx.putImageData(imageData, 0, 0);
+
+		// Put the more transparent image data into the rubberband rectangle
+
+		ctx.putImageData(
+			imageDataCopy, 0, 0,
+			rubberbandRectangle.left + ctx.lineWidth,
+			rubberbandRectangle.top + ctx.lineWidth,
+			(rubberbandRectangle.width - 2 * ctx.lineWidth) * deviceWidthOverCSSPixels,
+			(rubberbandRectangle.height - 2 * ctx.lineWidth) * deviceHeightOverCSSPixels
+		);
+
+	}
+
+	function setRubberbandRectangle(x, y){
+		rubberbandRectangle.left = Math.min(x, mousedown.x);
+		rubberbandRectangle.top = Math.min(y, mousedown.y);
+		rubberbandRectangle.width = Math.abs(x - mousedown.x);
+		rubberbandRectangle.height = Math.abs(y - mousedown.y);
+	}
+
+	function drawRubberband(){
+		ctx.strokeRect(
+			rubberbandRectangle.left + ctx.lineWidth,
+			rubberbandRectangle.top + ctx.lineWidth,
+			rubberbandRectangle.width - 2 * ctx.lineWidth,
+			rubberbandRectangle.height - 2 * ctx.lineWidth
+		);
+	}
+
+	function rubberbandStart(x, y){
+		mousedown.x = x;
+		mousedown.y = y;
+
+		rubberbandRectangle.left = mousedown.x;
+		rubberbandRectangle.top = mousedown.y;
+		rubberbandRectangle.width = 0;
+		rubberbandRectangle.height = 0;
+
+		dragging = true;
+		captureCanvasPixels();
+	}
+
+	function rubberbandStretch(x, y){
+		if(rubberbandRectangle.width > 2 * ctx.lineWidth && rubberbandRectangle.height > 2 * ctx.lineWidth){
+			if(imageData !== undefined){
+				restoreRubberbandPixels();
+			}
+		}
+
+		setRubberbandRectangle(x, y);
+
+		if(rubberbandRectangle.width > 2 * ctx.lineWidth && rubberbandRectangle.height > 2 * ctx.lineWidth){
+			drawRubberband();
+		}
+	}
+
+	function rubberbandEnd(){
+
+		ctx.putImageData(imageData, 0, 0);
+
+		// Draw the canvas back into itself, scaling along the way
+		ctx.drawImage(
+			cvs,
+			rubberbandRectangle.left + ctx.lineWidth * 2,
+			rubberbandRectangle.top + ctx.lineWidth * 2,
+			rubberbandRectangle.width - ctx.lineWidth * 4,
+			rubberbandRectangle.height - ctx.lineWidth * 4,
+			0, 0, cvs.width, cvs.height
+		);
+
+		dragging = false;
+		imageData = undefined;
+	}
+
+// Event handlers.......................................................
+
+	cvs.onmousedown = function(e){
+		var loc = windowToCanvas(e.clientX, e.clientY);
+		e.preventDefault();
+		rubberbandStart(loc.x, loc.y);
+	};
+
+	cvs.onmousemove = function(e){
+		var loc;
+
+		if(dragging){
+			loc = windowToCanvas(e.clientX, e.clientY);
+			rubberbandStretch(loc.x, loc.y);
+		}
+	};
+
+	cvs.onmouseup = function(e){
+		rubberbandEnd();
+	};
+
+// Initialization.........................................................
+	
+	image.src = "images/bubles.jpg";
+	image.onload = function(e){
+		ctx.drawImage(image, 0, 0, cvs.width, cvs.height);
+	};
+
+	btnReset.onclick = function(e){
+		ctx.clearRect(0, 0, cvs.width, cvs.height);
+		ctx.drawImage(image, 0, 0, cvs.width, cvs.height);
+	};
+
+	ctx.strokeStyle = "navy";
+	ctx.lineWidth = 1.0;
+</script>
+</html>

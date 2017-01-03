@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html>
+<style type="text/css">
+    body{
+        background: #eee;
+    }
+
+    #controller{
+        position: absolute;
+        left: 25px;
+        top: 25px;
+    }
+
+    #canvas{
+        background: #fff;
+        cursor: pointer;
+        margin-left: 10px;
+        margin-top: 10px;
+        -webkit-box-shadow: 4px 4px 8px rgba(0, 0, 0, 0.5);
+        -moz-box-shadow: 4px 4px 8px rgba(0, 0, 0, 0.5);
+        box-shadow: 4px 4px 8px rgba(0, 0, 0, 0.5);
+    }
+</style>
+<body>
+    
+    <canvas id="canvas" width="600" height="400"></canvas>
+
+    <div id="controller">
+        Stroke color: <select id="strokeStyleSelect">
+            <option value="red">red</option>
+            <option value="green">green</option>
+            <option value="blue">blue</option>
+            <option value="orange">orange</option>
+            <option value="cornflowerblue" selected>cornflowerblue</option>
+            <option value="goldenrod">goldenrod</option>
+            <option value="navy">navy</option>
+            <option value="purple">purple</option>
+        </select>
+
+        Shape: <select id="shapeSelect">
+            <option value="updateRubberbandShapeLine">line</option>
+            <option value="updateRubberbandShapeCircle">circle</option>
+        </select>
+
+        Guidewires: 
+        <input type="checkbox" checked id="guidewireCheckbox">
+        <input type="button" value="Erase all" id="eraseAllButton">
+    </div>
+</body>
+<script type="text/javascript" src="js/rubberBands.js"></script>
+</html>

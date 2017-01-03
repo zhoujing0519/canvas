@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title></title>
+</head>
+<body>
+	<canvas id="canvas" width="1024" height="640"></canvas>
+</body>
+<script type="text/javascript">
+	var cvs = document.getElementById("canvas"),
+		ctx = cvs.getContext("2d"),
+
+		HORIZONTAL_AXIS_MARGIN = 50,
+		VERTICAL_AXIS_MARGIN = 50,
+
+		AXIS_ORIGIN = {
+			x: HORIZONTAL_AXIS_MARGIN,
+			y: cvs.height - VERTICAL_AXIS_MARGIN
+		},
+		AXIS_TOP = VERTICAL_AXIS_MARGIN,
+		AXIS_RIGHT = cvs.width - HORIZONTAL_AXIS_MARGIN,
+
+		AXIS_WIDTH = AXIS_RIGHT - AXIS_ORIGIN.x,
+		AXIS_HEIGHT = AXIS_ORIGIN.y - AXIS_TOP,
+
+		HORIZONTAL_TICK_SPACING = 10,
+		VERTICAL_TICK_SPACING = 10,
+
+		NUM_HORIZONTAL_TICKS = AXIS_WIDTH / HORIZONTAL_TICK_SPACING,
+		NUM_VERTICAL_TICKS = AXIS_HEIGHT / VERTICAL_TICK_SPACING,
+
+		TICK_WIDTH = 10,
+
+		SPACING_BETWEEN_LABELS_AND_AXIS = 20;
+
+// Functions............................................................
+
+	function drawGrid(color, stepX, stepY){
+		ctx.strokeStyle = color;
+		ctx.lineWidth = 0.5;
+
+		for(var vertical = 0.5 + stepX; vertical < cvs.width; vertical += stepX){
+			ctx.beginPath();
+			ctx.moveTo(vertical, 0);
+			ctx.lineTo(vertical, cvs.height);
+			ctx.stroke();
+		}
+
+		for(var horizontal = 0.5 + stepY; horizontal < cvs.height; horizontal += stepY){
+			ctx.beginPath();
+			ctx.moveTo(0, horizontal);
+			ctx.lineTo(cvs.width, horizontal);
+			ctx.stroke();
+		}
+	}
+
+// Draw axes and ticks...........................................................................
+
+	function drawHorizontalAxis(){
+		ctx.beginPath();
+		ctx.moveTo(AXIS_ORIGIN.x, AXIS_ORIGIN.y);
+		ctx.lineTo(AXIS_RIGHT, AXIS_ORIGIN.y);
+		ctx.stroke();
+	}
+
+	function drawVerticalAxis(){
+		ctx.beginPath();
+		ctx.moveTo(AXIS_ORIGIN.x, AXIS_ORIGIN.y);
+		ctx.lineTo(AXIS_ORIGIN.x, AXIS_TOP);
+		ctx.stroke();
+	}
+
+	function drawHorizontalAxisTicks(){
+		var deltaY;
+
+		for(var i = 1; i < NUM_HORIZONTAL_TICKS; ++i){
+
+			deltaY = i % 5 === 0 ? TICK_WIDTH : TICK_WIDTH / 2;
+			ctx.beginPath();
+			ctx.moveTo(AXIS_ORIGIN.x + i * HORIZONTAL_TICK_SPACING, AXIS_ORIGIN.y + deltaY);
+			ctx.lineTo(AXIS_ORIGIN.x + i * HORIZONTAL_TICK_SPACING, AXIS_ORIGIN.y - deltaY);
+			ctx.stroke();
+
+		}
+	}
+
+	function drawVerticalAxisTicks(){
+		var deltaX;
+
+		for(var i = 1; i < NUM_VERTICAL_TICKS; ++i){
+
+			deltaX = i % 5 === 0 ? TICK_WIDTH : TICK_WIDTH / 2;
+			ctx.beginPath();
+			ctx.moveTo(AXIS_ORIGIN.x - deltaX, AXIS_ORIGIN.y - i * VERTICAL_TICK_SPACING);
+			ctx.lineTo(AXIS_ORIGIN.x + deltaX, AXIS_ORIGIN.y - i * VERTICAL_TICK_SPACING);
+			ctx.stroke();
+
+		}
+	}
+
+	function drawAxes(){
+		ctx.save();
+
+		ctx.lineWidth = 1.0;
+		ctx.fillStyle = "rgba(100, 140, 230, 0.8)";
+		ctx.strokeStyle = "navy";
+		drawHorizontalAxis();
+		drawVerticalAxis();
+
+		ctx.lineWidth = 0.5;
+		ctx.strokeStyle = "navy";
+		drawHorizontalAxisTicks();
+		drawVerticalAxisTicks();
+
+		ctx.restore();
+	}
+
+// Draw axis labels.....................................................
+
+	function drawHorizontalAxisLabels(){
+		ctx.textAlign = "center";
+		ctx.textBaseline = "top";
+
+		for(var i = 0; i < NUM_HORIZONTAL_TICKS; ++i){
+			if(i % 5 === 0){
+				ctx.fillText(i, AXIS_ORIGIN.x + i * HORIZONTAL_TICK_SPACING, AXIS_ORIGIN.y + SPACING_BETWEEN_LABELS_AND_AXIS);
+			}
+		}
+	}
+
+	function drawVerticalAxisLabels(){
+		ctx.textAlign = "right";
+		ctx.textBaseline = "middle"
+
+		for(var i = 0; i < NUM_VERTICAL_TICKS; ++i){
+			if(i % 5 === 0){
+				ctx.fillText(i, AXIS_ORIGIN.x - SPACING_BETWEEN_LABELS_AND_AXIS, AXIS_ORIGIN.y - i * VERTICAL_TICK_SPACING);
+			}
+		}
+	}
+
+	function drawAxisLabels(){
+		ctx.fillStyle = "cornflowerblue";
+		drawHorizontalAxisLabels();
+		drawVerticalAxisLabels();
+	}
+
+// Initialization.......................................................
+
+	drawGrid("lightgray", 10, 10);
+
+	ctx.font = "13px Arial";
+	ctx.shadowColor = "rgba(100, 140, 230, 0.8)";
+	ctx.shadowOffsetX = 3;
+	ctx.shadowOffsetY = 3;
+	ctx.shadowBlur = 5;
+
+	drawAxes();
+	drawAxisLabels();
+</script>
+</html>

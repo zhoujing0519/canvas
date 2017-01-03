@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title></title>
+</head>
+<body>
+	<canvas id="canvas" width="1024" height="640"></canvas>
+	<div id="controllers">
+		
+	Font Style: 
+	<select id="fontSelect">
+		<option value="Arial" selected>Arial</option>
+		<option value="Comic sans">Comic sans</option>
+	</select>
+
+	Font Size:
+	<select id="sizeSelect">
+		<option value="20">20</option>
+		<option value="24">24</option>
+		<option value="32" selected>32</option>
+		<option value="50">50</option>
+	</select>
+
+	Stroke color: <select id="strokeStyleSelect">
+            <option value="red">red</option>
+            <option value="green">green</option>
+            <option value="blue">blue</option>
+            <option value="orange">orange</option>
+            <option value="cornflowerblue" selected>cornflowerblue</option>
+            <option value="goldenrod">goldenrod</option>
+            <option value="navy">navy</option>
+            <option value="purple">purple</option>
+        </select>
+
+    Fill color: <select id="fillStyleSelect">
+        <option value="red">red</option>
+        <option value="green">green</option>
+        <option value="blue">blue</option>
+        <option value="orange">orange</option>
+        <option value="cornflowerblue" selected>cornflowerblue</option>
+        <option value="goldenrod">goldenrod</option>
+        <option value="navy">navy</option>
+        <option value="purple">purple</option>
+    </select>
+
+	</div>
+</body>
+<script type="text/javascript" src="js/textCursor.js"></script>
+<script type="text/javascript" src="js/textLine.js"></script>
+<script type="text/javascript" src="js/windowToCanvas.js"></script>
+<script type="text/javascript" src="js/drawingImageData.js"></script>
+<script type="text/javascript" src="js/drawGrid.js"></script>
+<script type="text/javascript">
+	var cvs = document.getElementById("canvas"),
+		ctx = cvs.getContext("2d"),
+
+		fontSelect = document.getElementById("fontSelect"),
+		sizeSelect = document.getElementById("sizeSelect"),
+		strokeStyleSelect = document.getElementById("strokeStyleSelect"),
+		fillStyleSelect = document.getElementById("fillStyleSelect"),
+
+		GRID_STROKE_STYLE = "lightgray",
+		GRID_HORIZONTAL_SPACING = 10,
+		GRID_VERTICAL_SPACING = 10,
+
+		line,
+
+		blinkingInterval,
+		BLINK_ON = 700,
+		BLINK_OFF = 300,
+
+		drawingSurfaceImageData,
+		cursor = new TextCursor();
+
+// Functions...........................................................................
+
+// Text..................................................................................
+
+	function setFont(){
+		ctx.font = sizeSelect.value + "px " + fontSelect.value;
+	}
+
+	function blinkCursor(x, y){
+		clearInterval(blinkingInterval);
+
+		blinkingInterval = setInterval(function(e){
+			cursor.erase(ctx, drawingSurfaceImageData);
+
+			setTimeout(function(e){
+
+				if(cursor.left == x && cursor.top + cursor.getHeight(ctx) == y){
+					cursor.draw(ctx, x, y);
+				}
+
+			}, BLINK_OFF);
+		}, BLINK_ON + BLINK_OFF);
+	}
+
+	function moveCursor(x, y){
+		// 清除光标
+		cursor.erase(ctx, drawingSurfaceImageData);
+
+		// 保存已输入的内容
+		saveDrawingSurface();
+		ctx.putImageData(drawingSurfaceImageData, 0, 0);
+
+		// 重新画出光标
+		cursor.draw(ctx, x, y);
+
+		// 鼠标点过的位置，光标闪烁
+		blinkCursor(x, y);
+	}
+
+// Event handlers....................................................................................
+
+	cvs.onmousedown = function(e){
+		var loc = windowToCanvas(e.clientX,e.clientY);
+		
+		// 此处的x,y是文本行的起始位置
+		line = new TextLine(loc.x, loc.y);
+
+		moveCursor(loc.x, loc.y);
+	};
+
+	fillStyleSelect.onchange = function(e){
+		ctx.fillStyle = fillStyleSelect.value;
+		cursor.fillStyle = fillStyleSelect.value;
+	};
+
+	strokeStyleSelect.onchange = function(e){
+		ctx.strokeStyle = strokeStyleSelect.value;
+		cursor.strokeStyle = strokeStyleSelect.value;
+	};
+
+// Key event handlers................................................................................
+
+	document.onkeydown = function(e){
+		if(e.keyCode === 8 || e.keyCode === 13){
+			e.preventDefault();
+		}
+
+		// Backspace
+		if(e.keyCode === 8){
+			ctx.save();
+
+			line.erase(ctx, drawingSurfaceImageData);
+			line.removeCharacterBeforeCaret();
+
+			moveCursor(line.left + line.getWidth(ctx), line.bottom);
+			line.draw(ctx);
+
+			ctx.restore();
+		}
+	};
+
+	document.onkeypress = function(e){
+		// e.which是兼容某种浏览器，效果和e.keyCode一样
+		var key = String.fromCharCode(e.which);
+
+		if(e.keyCode !== 8 && !e.ctrlKey && !e.metaKey){
+			e.preventDefault();
+
+			ctx.save();
+
+			line.erase(ctx, drawingSurfaceImageData);
+			line.insert(key);
+
+			moveCursor(line.left + line.getWidth(ctx), line.bottom);
+
+			ctx.shadowColor = "rgba(0, 0, 0, 0.5)";
+			ctx.shadowOffsetX = 1;
+			ctx.shadowOffsetY = 1;
+			ctx.shadowBlur = 2;
+
+			line.draw(ctx);
+
+			ctx.restore();
+		}
+	};
+
+// Initialization....................................................................................
+	drawGrid("lightgray", 10, 10);
+
+	fontSelect.onchange = setFont;
+	sizeSelect.onchange = setFont;
+
+	cursor.fillStyle = fillStyleSelect.value;
+	cursor.strokeStyle = strokeStyleSelect.value;
+
+	ctx.fillStyle = fillStyleSelect.value;
+	ctx.strokeStyle = strokeStyleSelect.value;
+	ctx.lineWidth = 2;
+
+	setFont();
+	saveDrawingSurface();
+</script>
+</html>

@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title></title>
+</head>
+<body>
+	<canvas id="canvas" width="1024" height="600"></canvas>
+
+	<div id="controllers">
+		
+		Fill:
+		<input type="checkbox" id="fillCheckbox">
+		Stroke:
+		<input type="checkbox" id="strokeCheckbox">
+		Shadow:
+		<input type="checkbox" id="shadowCheckbox">
+
+	</div>
+</body>
+<script type="text/javascript">
+	var cvs = document.getElementById("canvas"),
+		ctx = cvs.getContext("2d"),
+
+		fillCheckbox = document.getElementById("fillCheckbox"),
+		strokeCheckbox = document.getElementById("strokeCheckbox"),
+		shadowCheckbox = document.getElementById("shadowCheckbox"),
+
+		text = "HTML5";
+
+// Functions.................................................
+
+	function draw(){
+		ctx.clearRect(0, 0, cvs.width, cvs.height);
+
+		drawBackground();
+
+		shadowCheckbox.checked ? turnShadowsOn() : turnShadowsOff();
+
+		drawText();
+	}
+
+	function drawBackground(){
+		var STEP_Y = 12,
+			TOP_MARGIN = STEP_Y * 4,
+			LEFT_MARGIN = STEP_Y * 3,
+			i = cvs.height;
+
+		// Horizontal lines
+		ctx.strokeStyle = "lightgray";
+		ctx.lineWidth = 0.5;
+
+		while(i > TOP_MARGIN){
+			ctx.beginPath();
+			ctx.moveTo(0, i);
+			ctx.lineTo(cvs.width, i);
+			ctx.stroke();
+			i -= STEP_Y;
+		}
+
+		// Vertical line
+		ctx.strokeStyle = "rgba(100, 0, 0, 0.3)";
+		ctx.lineWidth = 1;
+		ctx.beginPath();
+		ctx.moveTo(LEFT_MARGIN, 0);
+		ctx.lineTo(LEFT_MARGIN, cvs.height);
+		ctx.stroke();
+	}
+
+	function turnShadowsOn(){
+		ctx.shadowColor = "rgba(0, 0, 0, 0.8)";
+		ctx.shadowOffsetX = 5;
+		ctx.shadowOffsetY = 5;
+		ctx.shadowBlur = 10;
+	}
+	function turnShadowsOff(){
+		ctx.shadowColor = undefined;
+		ctx.shadowOffsetX = 0;
+		ctx.shadowOffsetY = 0;
+		ctx.shadowBlur = 0;
+	}
+
+	function drawText(){
+		var TEXT_X = 65,
+			TEXT_Y = cvs.height / 2 + 35;
+
+		ctx.strokeStyle = "#fff";
+
+		if(fillCheckbox.checked) ctx.fillText(text, TEXT_X, TEXT_Y);
+		if(strokeCheckbox.checked) ctx.strokeText(text, TEXT_X, TEXT_Y);
+	}
+
+// Event handlers..................................................................
+	
+	fillCheckbox.onchange = draw;
+	strokeCheckbox.onchange = draw;
+	shadowCheckbox.onchange = draw;
+
+// Initialization.................................................................
+
+	ctx.font = "128pt Palatino";
+	ctx.lineWidth = 1;
+	ctx.fillStyle = "cornflowerblue";
+
+	turnShadowsOn();
+	draw();
+
+</script>
+</html>

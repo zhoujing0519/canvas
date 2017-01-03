@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html>
+<style type="text/css">
+    body{
+        background: #eee;
+    }
+
+    #controller{
+        position: absolute;
+        left: 25px;
+        top: 25px;
+    }
+
+    #canvas{
+        background: #fff;
+        cursor: pointer;
+        margin-left: 10px;
+        margin-top: 10px;
+        -webkit-box-shadow: 4px 4px 8px rgba(0, 0, 0, 0.5);
+        -moz-box-shadow: 4px 4px 8px rgba(0, 0, 0, 0.5);
+        box-shadow: 4px 4px 8px rgba(0, 0, 0, 0.5);
+    }
+</style>
+<body>
+    
+    <canvas id="canvas" width="1280" height="640"></canvas>
+
+    <div id="controller">
+        Stroke color: <select id="strokeStyleSelect">
+            <option value="red">red</option>
+            <option value="green">green</option>
+            <option value="blue">blue</option>
+            <option value="orange">orange</option>
+            <option value="cornflowerblue" selected>cornflowerblue</option>
+            <option value="goldenrod">goldenrod</option>
+            <option value="navy">navy</option>
+            <option value="purple">purple</option>
+        </select>
+
+        Fill color: <select id="fillStyleSelect">
+            <option value="red">red</option>
+            <option value="green">green</option>
+            <option value="blue">blue</option>
+            <option value="orange">orange</option>
+            <option value="cornflowerblue" selected>cornflowerblue</option>
+            <option value="goldenrod">goldenrod</option>
+            <option value="navy">navy</option>
+            <option value="purple">purple</option>
+        </select>
+
+        <!-- Shape: <select id="shapeSelect">
+            <option value="updateRubberbandShapeLine">line</option>
+            <option value="updateRubberbandShapeCircle">circle</option>
+        </select> -->
+
+        Slides: <select id="sidesSelect">
+            <option value="3">3</option>
+            <option value="4">4</option>
+            <option value="5">5</option>
+            <option value="6" selected>6</option>
+            <option value="7">7</option>
+            <option value="8">8</option>
+        </select>
+
+        Start angle: <select id="startAngleSelect">
+            <option value="0">0</option>
+            <option value="30">30</option>
+            <option value="45">45</option>
+            <option value="60" selected>60</option>
+            <option value="90">90</option>
+            <option value="120">120</option>
+            <option value="180">180</option>
+        </select>
+
+        Guidewires: 
+        <input type="checkbox" checked id="guidewireCheckbox">
+
+        Fill: 
+        <input type="checkbox" checked id="fillCheckbox">
+
+        Edit: 
+        <input type="checkbox" id="editCheckbox">
+
+        <input type="button" value="Erase all" id="eraseAllButton">
+    </div>
+</body>
+<script type="text/javascript" src="js/polygon.js"></script>
+<script type="text/javascript" src="js/rubberBands-polygon.js"></script>
+</html>

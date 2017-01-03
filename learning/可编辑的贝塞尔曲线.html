@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html>
+<style type="text/css">
+    body{
+        background: #eeeeee;
+    }
+    .floatingControls{
+        position: absolute;
+        left: 150px;
+        top: 100px;
+        width: 300px;
+        padding: 20px;
+        border: thin solid rgba(0, 0, 0, 0.3);
+        background: rgba(0, 0, 200, 0.1);
+        color: blue;
+        font: 14px Arial;
+        -webkit-box-shadow: rgba(0, 0, 0, 0.2) 6px 6px 8px;
+        -moz-box-shadow: rgba(0, 0, 0, 0.2) 6px 6px 8px;
+        -ms-box-shadow: rgba(0, 0, 0, 0.2) 6px 6px 8px;
+        box-shadow: rgba(0, 0, 0, 0.2) 6px 6px 8px;
+        display: none;
+    }
+    .floatingControls p{
+        margin-top: 0px;
+        margin-bottom: 20px;
+    }
+    #controllers{
+        position: absolute;
+        left: 25px;
+        top: 25px;
+    }
+    #canvas{
+        background: #ffffff;
+        cursor: pointer;
+        margin-left: 10px;
+        margin-top: 10px;
+        -webkit-box-shadow: 4px 4px 8px rgba(0, 0, 0, 0.5);
+        -moz-box-shadow: 4px 4px 8px rgba(0, 0, 0, 0.5);
+        -ms-box-shadow: 4px 4px 8px rgba(0, 0, 0, 0.5);
+        box-shadow: 4px 4px 8px rgba(0, 0, 0, 0.5);
+    }
+</style>
+<body>
+<!-- Canvas -->
+    <canvas id="canvas" width="601" height="401"></canvas>
+<!-- Controllers -->
+    <div id="controllers">
+        Stroke Color:
+        <select id="strokeStyleSelect">
+            <option value="red">red</option>    
+            <option value="green">green</option>    
+            <option value="blue">blue</option>    
+            <option value="orange">orange</option>    
+            <option value="cornflowerblue">cornflowerblue</option>    
+            <option value="goldenrod">goldenrod</option>    
+            <option value="navy">navy</option>    
+            <option value="purple">purple</option>    
+        </select>
+        Guidewires:
+        <input type="checkbox" id="guidewireCheckbox" checked />
+        <input type="button" id="eraseAllButton" value="Erase All" />
+    </div>
+<!-- Instructions -->
+    <div id="instructions" class="floatingControls">
+        <p>Drag the curve end- and control points, click outside of the points to finalize the curve.</p>
+        <p>When you are done dragging end- and control points, click outside of the points to finalize the curve.</p>
+        <input type="button" id="instructionsOkayButton" value="Okay" autofocus />
+        <input type="button" id="instructionsNoMoreButton" value="Do Not Show These Instructions Again." />
+    </div>
+</body>
+<script type="text/javascript" src="js/bezierCurve.js"></script>
+</html>

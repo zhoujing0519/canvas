@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title></title>
+</head>
+<body>
+
+	<canvas id="canvas"></canvas>
+
+</body>
+
+<script type="text/javascript">
+	
+	var cvs = document.getElementById("canvas"),
+		ctx = cvs.getContext("2d");
+
+	var nums = 2,
+		obj = [],
+		colors = ["cornflowerblue", "navy", "purple", "green", "red", "blue"];
+
+	cvs.width = 1024;
+	cvs.height = 640;
+
+// Functions.................................................
+
+	function drawCircle(x, y, r, color){
+		ctx.save();
+
+		ctx.beginPath();
+		ctx.fillStyle = color;
+		ctx.arc(x, y, r, 0, Math.PI * 2, false);
+		ctx.fill();
+
+		ctx.restore();
+	}
+
+	!function animate(){
+		ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
+
+		ctx.fillStyle = "lightgray";
+		ctx.fillRect(0, 0, cvs.width, cvs.height);
+
+		for(var i = 0; i < obj.length; i++){
+			
+			obj[i].x += obj[i].vx;
+			obj[i].y += obj[i].vy;
+
+			if(obj[i].x > ctx.canvas.width || obj[i].x < 0){
+				obj[i].vx = - obj[i].vx;
+			}
+			if(obj[i].y > ctx.canvas.height || obj[i].y < 0){
+				obj[i].vy = - obj[i].vy;
+			}
+
+			drawCircle(obj[i].x, obj[i].y, obj[i].r, obj[i].color);
+
+		}
+
+		window.requestAnimationFrame(animate);
+
+	}();
+
+// Event handler.....................................................
+
+cvs.onmousemove = function(e){
+	var x = e.clientX,
+		y = e.clientY;
+
+	for(var i = 0; i < nums; i++){
+		var oCircle = {
+			x: Math.random() * 30 + x,
+			y: Math.random() * 30 + y,
+			r: Math.round(Math.random() * 20 + 1),
+			color: colors[Math.floor(Math.random() * colors.length)],
+			vx: Math.random() * 3 - 3,
+			vy: Math.random() * 3 - 3
+		};
+
+		obj.push(oCircle);
+
+		if(obj.length > 600){
+			obj.shift();
+		}
+
+		// drawCircle(ctx, oCircle.x, oCircle.y, oCircle.r, oCircle.color);
+		drawCircle(obj[i].x, obj[i].y, obj[i].r, obj[i].color);
+
+	}
+};
+
+// Initialization........................................................
+
+	ctx.fillStyle = "lightgray";
+	ctx.fillRect(0, 0, cvs.width, cvs.height);
+
+</script>
+
+</html>

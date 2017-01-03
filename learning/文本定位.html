@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title></title>
+</head>
+<body>
+	<canvas id="cvs" width="1024" height="600"></canvas>
+</body>
+<script type="text/javascript">
+	var cvs = document.getElementById("cvs"),
+		ctx = cvs.getContext("2d"),
+
+		fontHeight = 24,
+		alignValues = ["start", "center", "end"],
+		baselineValues = ["top", "middle", "bottom", "alphabetic", "ideographic", "hanging"],
+
+		x,y;
+
+// Functions........................................................
+
+	function drawTextMarker(){
+		ctx.fillStyle = "yellow";
+		ctx.fillRect(x, y, 7, 7);
+		ctx.strokeRect(x, y, 7, 7);
+	}
+
+	function drawText(text, textAlign, textBaseline){
+		if(textAlign) ctx.textAlign = textAlign;
+		if(textBaseline) ctx.textBaseline = textBaseline;
+
+		ctx.fillStyle = "cornflowerblue";
+		ctx.fillText(text, x, y);
+	}
+
+	function drawTextLine(){
+		ctx.strokeStyle = "gray";
+		ctx.beginPath();
+		ctx.moveTo(x, y);
+		ctx.lineTo(x + 738, y);
+		ctx.stroke();
+	}
+
+// Initialization....................................................
+
+	ctx.font = "oblique normal bold 24px palatino";
+
+	for(var align = 0; align < alignValues.length; ++align){
+		for(var baseline = 0; baseline < baselineValues.length; ++baseline){
+
+			x = 20 + align * fontHeight * 15;
+			y = 20 + baseline * fontHeight * 3;
+
+			drawText(alignValues[align] + "/" + baselineValues[baseline], alignValues[align], baselineValues[baseline]);
+
+			drawTextMarker();
+			drawTextLine();
+
+		}
+	}
+</script>
+</html>

@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html>
+<style type="text/css">
+    body{
+        background: #eee;
+    }
+
+    #canvas{
+        background: #fff;
+        cursor: pointer;
+        margin-left: 10px;
+        margin-top: 10px;
+        -webkit-box-shadow: 4px 4px 8px rgba(0, 0, 0, 0.5);
+        -moz-box-shadow: 4px 4px 8px rgba(0, 0, 0, 0.5);
+        box-shadow: 4px 4px 8px rgba(0, 0, 0, 0.5);
+    }
+</style>
+<body>
+    
+    <canvas id="canvas" width="600" height="600"></canvas>
+
+</body>
+<script type="text/javascript">
+    var ctx = document.getElementById("canvas").getContext("2d"),
+        moveToFunction = CanvasRenderingContext2D.prototype.moveTo;
+        CanvasRenderingContext2D.prototype.lastMoveToLocation = {};
+
+// 对moveTo进行扩展
+    CanvasRenderingContext2D.prototype.moveTo = function(x, y){
+        moveToFunction.apply(ctx, [x, y]);
+        this.lastMoveToLocation.x = x;
+        this.lastMoveToLocation.y = y;
+    };
+
+// 对Canvas新增dashedLineTo方法
+    CanvasRenderingContext2D.prototype.dashedLineTo = function(x, y, dashLength){
+        dashLength = dashLength === undefined ? 5 : dashLength;
+
+        var startX = this.lastMoveToLocation.x,
+            startY = this.lastMoveToLocation.y,
+            deltaX = x - startX,
+            deltaY = y - startY,
+            numDashes = Math.floor(Math.sqrt(deltaX * deltaX + deltaY * deltaY) / dashLength);
+
+        for(var i = 0; i < numDashes; ++i){
+            this[i % 2 === 0 ? "moveTo" : "lineTo"](startX + (deltaX / numDashes) * i, startY + (deltaY / numDashes) * i);
+        }
+
+        this.moveTo(x, y);
+    };
+
+// 初始化
+    ctx.lineWidth = 3;
+    ctx.strokeStyle = "blue";
+
+    ctx.moveTo(20, 20);
+    ctx.dashedLineTo(ctx.canvas.width - 20, 20);
+    ctx.dashedLineTo(ctx.canvas.width - 20, ctx.canvas.height - 20);
+    ctx.dashedLineTo(20, ctx.canvas.height - 20);
+    ctx.dashedLineTo(20, 20);
+    ctx.dashedLineTo(ctx.canvas.width - 20, ctx.canvas.height - 20);
+
+    ctx.stroke();
+</script>
+</html>

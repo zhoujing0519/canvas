@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+	<title></title>
+	<style type="text/css">
+		body{
+			background: rgba(100, 145, 250, 0.1);
+		}
+
+		#scaleSlider{
+			vertical-align: 10px;
+			width: 100px;
+			margin-left: 90px;
+		}
+		#canvas{
+			margin: 10px 20px 0px 20px;
+			border: thin solid #aaa;
+			cursor: crosshair;
+		}
+		#controls{
+			margin-left: 15px;
+			padding: 0;
+		}
+		#scaleOutput{
+			position: absolute;
+			width: 60px;
+			height: 30px;
+			margin-left: 10px;
+			vertical-align: center;
+			text-align: center;
+			color: blue;
+			font: 18px Arial;
+			text-shadow: 2px 2px 4px rgba(100, 140, 250, 0.8);
+		}
+	</style>
+</head>
+<body>
+
+	<div id="controls">
+		<input type="reset" id="btn-reset">
+	</div>
+
+	<canvas id="canvas" width="800" height="520"></canvas>
+</body>
+<script type="text/javascript">
+	var cvs = document.getElementById("canvas"),
+		ctx = cvs.getContext("2d"),
+
+		btnReset = document.getElementById("btn-reset"),
+		image = new Image(),
+		imageData,
+
+		mousedown = {},
+		rubberbandRectangle = {},
+		dragging = false;
+
+// Functions.........................................................
+	
+	function windowToCanvas(x, y){
+		var box = cvs.getBoundingClientRect();
+
+		return {
+			x: (x - box.left) * (cvs.width / box.width),
+			y: (y - box.top) * (cvs.height / box.height)
+		};
+	}
+
+	// 捕获图像
+	function captureRubberbandPixels(){
+		imageData = ctx.getImageData(
+			rubberbandRectangle.left,
+			rubberbandRectangle.top,
+			rubberbandRectangle.width,
+			rubberbandRectangle.height
+		);
+	}
+
+	// 还原图像
+	function restoreRubberbandPixels(){
+		ctx.putImageData(imageData, rubberbandRectangle.left, rubberbandRectangle.top);
+	}
+
+	function drawRubberband(){
+		ctx.strokeRect(
+			rubberbandRectangle.left + ctx.lineWidth,
+			rubberbandRectangle.top + ctx.lineWidth,
+			rubberbandRectangle.width - 2 * ctx.lineWidth,
+			rubberbandRectangle.height - 2 * ctx.lineWidth
+		);
+	}
+
+	function setRubberbandRectangle(x, y){
+		rubberbandRectangle.left = Math.min(x, mousedown.x);
+		rubberbandRectangle.top = Math.min(y, mousedown.y);
+		rubberbandRectangle.width = Math.abs(x - mousedown.x);
+		rubberbandRectangle.height = Math.abs(y - mousedown.y);
+	}
+
+	function updateRubberband(){
+		captureRubberbandPixels();
+		drawRubberband();
+	}
+
+	function rubberbandStart(x, y){
+		mousedown.x = x;
+		mousedown.y = y;
+
+		rubberbandRectangle.left = mousedown.x;
+		rubberbandRectangle.top = mousedown.y;
+
+		dragging = true;
+	}
+
+	function rubberbandStretch(x, y){
+		if(rubberbandRectangle.width > 2 * ctx.lineWidth && rubberbandRectangle.height > 2 * ctx.lineWidth){
+			if(imageData !== undefined){
+				restoreRubberbandPixels();
+			}
+		}
+
+		setRubberbandRectangle(x, y);
+
+		if(rubberbandRectangle.width > 2 * ctx.lineWidth && rubberbandRectangle.height > 2 * ctx.lineWidth){
+			updateRubberband();
+		}
+	}
+
+	function rubberbandEnd(){
+		ctx.drawImage(
+			cvs,
+			rubberbandRectangle.left + ctx.lineWidth * 2,
+			rubberbandRectangle.top + ctx.lineWidth * 2,
+			rubberbandRectangle.width - ctx.lineWidth * 4,
+			rubberbandRectangle.height - ctx.lineWidth * 4,
+			0, 0, cvs.width, cvs.height
+		);
+
+		dragging = false;
+		imageData = undefined;
+	}
+
+// Event handlers.......................................................
+
+	cvs.onmousedown = function(e){
+		var loc = windowToCanvas(e.clientX, e.clientY);
+		e.preventDefault();
+		rubberbandStart(loc.x, loc.y);
+	};
+
+	cvs.onmousemove = function(e){
+		var loc;
+
+		if(dragging){
+			loc = windowToCanvas(e.clientX, e.clientY);
+			rubberbandStretch(loc.x, loc.y);
+		}
+	};
+
+	cvs.onmouseup = function(e){
+		rubberbandEnd();
+	};
+
+// Initialization.........................................................
+	
+	image.src = "images/bubles.jpg";
+	image.onload = function(e){
+		ctx.drawImage(image, 0, 0, cvs.width, cvs.height);
+	};
+
+	btnReset.onclick = function(e){
+		ctx.clearRect(0, 0, cvs.width, cvs.height);
+		ctx.drawImage(image, 0, 0, cvs.width, cvs.height);
+	};
+
+	ctx.strokeStyle = "navy";
+	ctx.lineWidth = 1.0;
+</script>
+</html>

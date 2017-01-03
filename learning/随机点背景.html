@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Document</title>
+	<style>
+		*{ margin: 0; padding: 0; }
+		html, body{
+			width: 100%;
+			height: 100%;
+		}
+		canvas{ display: block; }
+	</style>
+</head>
+<body>
+	<canvas id="canvas"></canvas>
+</body>
+<script type="text/javascript">
+	var cvs = document.getElementById("canvas"),
+		ctx = cvs.getContext("2d");
+
+		cvs.width = document.body.clientWidth;
+		cvs.height = document.body.clientHeight;
+
+	var points = [],
+		mousedown = {};
+
+// Functions.................................................
+
+	function drawBackground(){
+		ctx.clearRect(0, 0, cvs.width, cvs.height);
+
+		ctx.fillStyle = "cornflowerblue";
+		ctx.fillRect(0, 0, cvs.width, cvs.height);
+		
+	}
+
+	!function createPoint(num){
+		for(var i = 0; i < num; i++){
+			var point = {
+
+				x: Math.random() * cvs.width,
+				y: Math.random() * cvs.height,
+				r: Math.floor(Math.random() * 3),
+				vx: Math.random() * 4 > 2 ? Math.random() * 4 : - Math.random() * 4,
+				vy: Math.random() * 4 > 2 ? Math.random() * 4 : - Math.random() * 4
+
+			};
+			points.push(point);
+		}
+	}(800);
+
+	function drawCircle(x, y, r, color){
+		ctx.save();
+
+		ctx.beginPath();
+		ctx.fillStyle = color;
+		ctx.arc(x, y, r, 0, Math.PI * 2, false);
+		ctx.fill();
+
+		ctx.restore();
+	}
+
+	!function animate(){
+		drawBackground();
+
+		for(var i = 0; i < points.length; i++){
+
+			points[i].x += points[i].vx;
+			points[i].y += points[i].vy;
+
+			if(points[i].x > ctx.canvas.width || points[i].x < 0){
+				points[i].vx = - points[i].vx;
+			}
+			if(points[i].y > ctx.canvas.height || points[i].y < 0){
+				points[i].vy = - points[i].vy;
+			}
+
+			drawCircle(points[i].x, points[i].y, points[i].r, "#fff");
+
+		}
+
+		window.requestAnimationFrame(animate);
+	}();
+
+// Event handler...............................................................................
+
+// Initialization......................................................
+
+	// drawBackground();
+	// createPoint(200);
+	// drawPoints();
+
+</script>
+</html>

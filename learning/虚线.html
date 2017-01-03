@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html>
+<style type="text/css">
+    body{
+        background: #eee;
+    }
+
+    #canvas{
+        background: #fff;
+        cursor: pointer;
+        margin-left: 10px;
+        margin-top: 10px;
+        -webkit-box-shadow: 4px 4px 8px rgba(0, 0, 0, 0.5);
+        -moz-box-shadow: 4px 4px 8px rgba(0, 0, 0, 0.5);
+        box-shadow: 4px 4px 8px rgba(0, 0, 0, 0.5);
+    }
+</style>
+<body>
+    
+    <canvas id="canvas" width="600" height="600"></canvas>
+
+</body>
+<script type="text/javascript">
+    var ctx = document.getElementById("canvas").getContext("2d");
+
+    // Functions
+
+    function drawDashedLine(ctx, x1, y1, x2, y2, dashLength){
+        dashLength = dashLength === undefined ? 5 : dashLength;
+
+        var deltaX = x2 - x1,
+            deltaY = y2 - y1,
+            numDashes = Math.floor(Math.sqrt(deltaX * deltaX + deltaY * deltaY) / dashLength);
+
+        for(var i = 0; i < numDashes; ++i){
+            ctx[i % 2 === 0 ? "moveTo" : "lineTo"](x1 + (deltaX / numDashes) * i, y1 + (deltaY / numDashes) * i);
+        }
+
+        ctx.stroke();
+    }
+
+    // Initialization
+
+    ctx.lineWidth = 3;
+    ctx.strokeStyle = "blue";
+    drawDashedLine(ctx, 20, 20, ctx.canvas.width - 20, 20);
+    drawDashedLine(ctx, ctx.canvas.width - 20, 20, ctx.canvas.width - 20, ctx.canvas.height - 20, 10);
+    drawDashedLine(ctx, ctx.canvas.width - 20, ctx.canvas.height - 20, 20, ctx.canvas.height - 20, 15);
+    drawDashedLine(ctx, 20, ctx.canvas.height - 20, 20, 20, 1);
+</script>
+</html>

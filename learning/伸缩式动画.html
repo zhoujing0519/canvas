@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title></title>
+</head>
+<body>
+	<canvas id="canvas" width="600" height="420"></canvas>
+</body>
+<script type="text/javascript">
+	var cvs = document.getElementById("canvas"),
+		ctx = cvs.getContext("2d");
+
+// Functions.........................................
+
+	function drawText(){
+		ctx.save();
+
+		ctx.shadowColor = "rgba(100, 100, 150, 0.8)";
+		ctx.shadowOffsetX = 5;
+		ctx.shadowOffsetY = 5;
+		ctx.shadowBlur = 10;
+
+		ctx.fillStyle = "cornflowerblue";
+		ctx.fillText("HTML5", 20, 250);
+		ctx.strokeStyle = "yellow";
+		ctx.strokeText("HTML5", 20, 250);
+
+		ctx.restore();
+	}
+
+	function setClippingRegion(radius){
+		ctx.beginPath();
+		ctx.arc(cvs.width / 2, cvs.height / 2, radius, 0, Math.PI * 2, false);
+		ctx.clip();
+	}
+
+	function fillCanvas(color){
+		ctx.fillStyle = color;
+		ctx.fillRect(0, 0, cvs.width, cvs.height);
+	}
+
+	function endAnimation(loop){
+		clearInterval(loop);
+
+		setTimeout(function(e){
+			ctx.clearRect(0, 0, cvs.width, cvs.height);
+			drawText();
+		},1000);
+	}
+
+	function drawAnimationFrame(radius){
+		setClippingRegion(radius);
+		fillCanvas("lightgray");
+		drawText();
+	}
+
+	function animate(){
+		var radius = cvs.width / 2,
+			loop;
+
+		loop = setInterval(function(){
+			radius -= cvs.width / 100;
+
+			fillCanvas("charcoal");
+
+			if(radius > 0){
+				ctx.save();
+				drawAnimationFrame(radius);
+				ctx.restore();
+			}else{
+				endAnimation(loop);
+			}
+		}, 16);
+	}
+
+// Event handlers......................................................................
+
+cvs.onmousedown = function(e){
+	animate();
+};
+
+// Initialization......................................................................
+
+ctx.lineWidht = 0.5;
+ctx.font = "128pt Comic-sans";
+drawText();
+</script>
+</html>

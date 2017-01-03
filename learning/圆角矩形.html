@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html>
+<body>
+    
+    <canvas id="canvas" width="600" height="600"></canvas>
+
+</body>
+<script type="text/javascript">
+    var ctx = document.getElementById("canvas").getContext("2d");
+
+    // Functions
+
+    function roundedRect(cornerX, cornerY, width, height, cornerRadius){
+        if(width > 0){
+            ctx.moveTo(cornerX + cornerRadius, cornerY);
+        }else{
+            ctx.moveTo(cornerX - cornerRadius, cornerY);
+        }
+
+        ctx.arcTo(cornerX + width, cornerY, cornerX + width, cornerY + height, cornerRadius);
+        ctx.arcTo(cornerX + width, cornerY + height, cornerX, cornerY + height, cornerRadius);
+        ctx.arcTo(cornerX, cornerY + height, cornerX, cornerY, cornerRadius);
+
+        if(width > 0){
+            ctx.arcTo(cornerX, cornerY, cornerX + cornerRadius, cornerY, cornerRadius);
+        }else{
+            ctx.arcTo(cornerX, cornerY, cornerX - cornerRadius, cornerY, cornerRadius);
+        }
+    }
+
+    function drawRoundedRect(strokeStyle, fillStyle, cornerX, cornerY, width, height, cornerRadius){
+        ctx.beginPath();
+
+        roundedRect(cornerX, cornerY, width, height, cornerRadius);
+
+        ctx.strokeStyle = strokeStyle;
+        ctx.fillStyle = fillStyle;
+
+        ctx.stroke();
+        ctx.fill();
+    }
+
+    function drawGrid(ctx, color, stepx, stepy){
+            ctx.strokeStyle = color;
+            ctx.lineWidth = 0.5;
+
+            for(var i = 0.5 + stepx; i < ctx.canvas.width; i += stepx){
+
+                ctx.beginPath();
+                ctx.moveTo(i, 0);
+                ctx.lineTo(i, ctx.canvas.height);
+                ctx.stroke();
+
+            }
+
+            for(var i = 0.5 + stepy; i < ctx.canvas.height; i += stepy){
+
+                ctx.beginPath();
+                ctx.moveTo(0, i);
+                ctx.lineTo(ctx.canvas.width, i);
+                ctx.stroke();
+
+            }
+       }
+
+    // Initialization
+    drawGrid(ctx, "lightgray", 10, 10);
+    drawRoundedRect("blue", "yellow", 50, 40, 100, 100, 10);
+    drawRoundedRect("purple", "green", 270, 40, -100, 100, 20);
+    drawRoundedRect("red", "white", 300, 140, 100, -100, 30);
+    drawRoundedRect("white", "blue", 520, 140, -100, -100, 40);
+</script>
+</html>

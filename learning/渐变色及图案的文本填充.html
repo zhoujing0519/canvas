@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title></title>
+</head>
+<body>
+	<canvas id="cvs" width="1024" height="700"></canvas>
+</body>
+<script type="text/javascript">
+	var cvs = document.getElementById("cvs"),
+		ctx = cvs.getContext("2d"),
+
+		image = new Image(),
+		gradient = ctx.createLinearGradient(0, 0, cvs.width, cvs.height),
+		text = "Canvas",
+		pattern;
+
+// Functions................................................................
+
+	function drawGradientText(){
+		ctx.fillStyle = gradient;
+		ctx.fillText(text, 65, 200);
+		ctx.strokeText(text, 65, 200);
+	}
+
+	function drawPatternText(){
+		ctx.fillStyle = pattern;
+		ctx.fillText(text, 65, 450);
+		ctx.strokeText(text, 65, 450);
+	}
+
+// Event handlers........................................................,
+
+	image.onload = function(e){
+		pattern = ctx.createPattern(image, "repeat");
+		drawPatternText();
+	};
+
+// Initialization............................................................
+
+	image.src = "images/bubles.jpg";
+
+	ctx.font = "256px Palatino";
+	ctx.strokeStyle = "cornflowerblue";
+
+	ctx.shadowColor = "rgba(100, 100, 150, 0.8)";
+	ctx.shadowOffsetX = 5;
+	ctx.shadowOffsetY = 5;
+	ctx.shadowBlur = 10;
+
+	gradient.addColorStop(0, "blue");
+	gradient.addColorStop(0.25, "blue");
+	gradient.addColorStop(0.5, "white");
+	gradient.addColorStop(0.75, "red");
+	gradient.addColorStop(1.0, "yellow");
+
+	drawGradientText();
+</script>
+</html>
