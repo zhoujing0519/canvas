@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>哈一口气</title>
+	<style>
+		canvas{
+			position: absolute;
+			left: 0;
+			top: 0;
+		}
+	</style>
+</head>
+<body>
+	<canvas id="bg" width="640" height="1100"></canvas>
+	<canvas id="cvs" width="640" height="1100"></canvas>
+</body>
+<script type="text/javascript" src="js/erasure-demo.js"></script>
+<script type="text/javascript">
+	var bg = document.getElementById("bg"),
+		bgCtx = bg.getContext("2d"),
+		bgImg = new Image();
+		bgImg.src = "images/bg_loading.png";
+
+	bgImg.onload = function(){
+		bgCtx.drawImage(bgImg, 0, 0, bg.width, bg.height);
+	};
+
+</script>
+<script type="text/javascript">
+	// 写字canvas
+    var Canvas_erasure = new erasure({
+        elem: 'cvs',
+        img_src: 'images/foo.png',
+        line_width: 10
+    });
+    // 写字canvas初始化
+    Canvas_erasure.init();
+</script>
+</html>

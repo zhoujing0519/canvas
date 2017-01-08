@@ -1,0 +1,144 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>新年祝福哈出来</title>
+<meta name="viewport" content="width=640,user-scalable=0">
+
+<link rel="stylesheet" href="css/main.css">
+<script src="js/jquery-2.1.0.min.js"></script>
+<script src="js/jweixin-1.1.0.js"></script>
+<script src="js/jquery.imgpreload.js"></script>
+<!--<script src="http://cdn2.qizyg.com/fans_only/js/requestAnimationFrame.js"></script>-->
+<script src="js/init.js"></script>
+<script src="js/wx.js"></script>
+<script src="js/ThreeCanvas.js"></script>
+<script src="js/Snow.js"></script>
+<script src="js/erasure.js"></script>
+<script>
+	var _hmt = _hmt || [];
+
+	(function () {
+		var hm = document.createElement("script");
+		hm.src = "//hm.baidu.com/hm.js?e987d7fe79ea187b21b8de2d230a515c";
+		var s = document.getElementsByTagName("script")[0];
+		s.parentNode.insertBefore(hm, s);
+	})();
+
+</script>
+<script>
+
+//如果有作品，视为不是fans
+siteinfo.isfans = 0;
+
+siteinfo.workid = '1483774455103_17';
+</script>
+<script src="js/fc.js"></script>
+
+
+</head>
+<body>
+	<div class="wrap loading_scene" style="display: block;">
+		<div class="test"></div>
+	<!--<div class="loading_scene">-->
+		<div class="loading_anim zx2 loading_main"></div>
+		<div class="loading_num zx2 loading_main" style="display: none"><span id="loading_num">0</span>%</div>
+		<div class="loading_text zx2 loading_main"></div>
+		<div class="loading_scene zx1 loading_main"></div>
+	<!--</div>-->
+
+	<!--<div class="main" style="display: none">-->
+		<div class="logo_png zx11 main"></div>
+	<!--<div class="btn_bottom_png zx11 main pulse">-->
+
+<!--</div>-->
+		<div class="btn_intro_png zx11 main"></div>
+		<div class="mask_bottom main" style="display: none;">
+			<!--<img data-src="http://cdn2.qizyg.com/fans_only/img/btn_close_bottom.png" class="btn_close_bottom"/>-->
+			<div style="text-align: right; padding:20px 70px 0 0; ">
+				<img data-src="http://cdn2.qizyg.com/fans_only/img/btn_close_intro.png" class="btn_close_bottom" style="display: inline-block;">
+			</div>
+			<img data-src="http://cdn2.qizyg.com/fans_only/img/pic_pop_bottom.png">
+			<img data-src="http://cdn2.qizyg.com/fans_only/img/btn_att_bottom.png" class="btn_att_bottom">
+		</div>
+
+
+		<div class="snow zx5" id="snow"></div>
+		<img data-src="http://cdn2.qizyg.com/fans_only/img/mask.png" width="100%" class="pic zx6 mask main">
+		<img data-src="http://cdn2.qizyg.com/fans_only/img/s1.png" width="100%" class="pic zx1 s1 scene main">
+		<img data-src="http://cdn2.qizyg.com/fans_only/img/s2.png" width="100%" class="pic zx2 s2 scene" style="display: none;">
+		<img data-src="http://cdn2.qizyg.com/fans_only/img/t1B.png?v=1229" width="100%" class="pic zx4 t1 tip main" style="display: none;">
+
+		<div class="s3 zx9" id="bb2" style="display: none;width:640px;height:1100px">
+			<div class="btn_play_png zx11" style="display: none;left: 240px;"></div>
+			<!--<div class="btn_gift_png zx11" style="display: none;"></div>-->
+			<img data-src="http://cdn2.qizyg.com/fans_only/img/t1B.png" width="100%" class="pic zx6 t1 tip main" style="display: none;">
+			<canvas id="showWork" width="640" height="1100" imgsrc='http://cdn2.qizyg.com/fans_only/img/s1.png' class="zx5" style="background: transparent;"></canvas>
+			<img data-src="http://cdn2.qizyg.com/fans_only/img/foo.png" width="100%" class="pic zx3 main" >
+		</div>
+
+
+		<div class="tip t2" style="display: none;">
+			<img data-src="http://cdn2.qizyg.com/fans_only/img/t2_1.png" width="100%" class="pic zx5 text tip" style="display: none;">
+			<img data-src="http://cdn2.qizyg.com/fans_only/img/t2_2.png" width="100%" class="pic zx5 text tip" style="display: none;">
+			<img data-src="http://cdn2.qizyg.com/fans_only/img/t2_3.png" width="100%" class="pic zx5 text tip" style="display: none;">
+		</div>
+
+		<img data-src="http://cdn2.qizyg.com/fans_only/img/t3.png" width="100%" class="pic zx6 t3 tip" style="display: none;">
+
+		<div class="smoke zx8">
+			<canvas id="smoke_canvas" width="640" height="1100" style=""></canvas>
+		</div>
+<!--写字-->
+		<div class="foo zx9" id="bb" style="display: none">
+			<div class="btn_redo_png zx11 btn_write" style="display: none;"></div>
+			<div class="btn_share_png zx11 btn_write" style="display: none;"></div>
+			<canvas id="CanvasDoodle" width="640" height="1100"></canvas>
+		</div>
+		<img data-src="http://cdn2.qizyg.com/fans_only/img/notice.png" width="100%" class="zx10 notice" style="display: none;">
+
+		<div class="mask_share zx100" style="display: none;">
+			<div class="tip_share_png" style="display: none"></div>
+			<div class="card_waiting" style="display: none ">
+			<div class="loading_anim zx6"></div>
+			<div class="loading_text">圣诞贺卡正在上传...</div>
+		</div>
+	</div>
+
+	<div class="scene_shared zx100" style="display: none;">
+		<div class="btn_att_pai zx8"></div>
+		<img data-src="http://cdn2.qizyg.com/fans_only/img/pai_att.png" class="zx7">
+	</div>
+	<div class="mask_intro zx100" style="display: none;">
+		<div class="intro_c">
+		<div style="text-align: right">
+		<img data-src="http://cdn2.qizyg.com/fans_only/img/btn_close_intro.png" class="btn_close_intro">
+	</div>
+	<h2 class="font1">新粉好礼 | 祝福“哈”出来！</h2>
+
+	<div class="intro_h">
+		<div>
+			<p>
+				<span class="font1">活动时间：</span>2015年12月24日—2016年1月7日<br>
+				<span class="font1">活动规则：</span><br>
+				1. 进入活动主页，对着屏幕哈气，得到肯德基宅急送或好友对你的祝福。<br>
+				2. 在屏幕上绘制自己的祝福，绘制完成后可分享给好友。<br>
+
+
+		</div>
+
+	</div>
+</div>
+</div>
+</div>
+
+<!--</div>-->
+
+<!--<input type="hidden" id="x_start" value="0"/>-->
+<!--<input type="hidden" id="x_end" value="0"/>-->
+
+
+<script src="js/app_end.js"></script>
+</body>
+</html>

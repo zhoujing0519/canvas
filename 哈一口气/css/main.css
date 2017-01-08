@@ -1,0 +1,451 @@
+html {
+    font-size: 22px;
+    width: 100%;
+    height: 100%;
+    margin: 0;
+    padding: 0;
+    background-image: url("http://cdn2.qizyg.com/fans_only/img/bg_loading.png");
+    background-position: center top;
+    background-repeat: no-repeat;
+    background-color: #01040a;
+    /*overflow: hidden;*/
+}
+
+body {
+    position: relative;
+    height: 100%;
+    font-family: arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+
+    color: #fff;
+}
+img{
+    margin: 0;
+    border: 0;
+}
+a, a:focus, img,div {
+    -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+}
+
+input {
+    outline: medium;
+}
+
+p {
+    margin: 0;
+    padding: 0;
+}
+
+.fw {
+    width: 6.4rem;
+}
+
+.zx1 {
+    z-index: 1;
+    position: absolute;
+}
+
+.zx2 {
+    z-index: 2;
+    position: absolute;
+}
+.zx3 {
+    z-index: 3;
+    position: absolute;
+}
+.zx4 {
+    z-index: 4;
+    position: absolute;
+}
+.zx5 {
+    z-index: 5;
+    position: absolute;
+}
+.zx6 {
+    z-index: 6;
+    position: absolute;
+}
+.zx7 {
+    z-index: 7;
+    position: absolute;
+}
+.zx8 {
+     z-index: 8;
+     position: absolute;
+ }
+.zx9 {
+    z-index: 9;
+    position: absolute;
+}
+.zx10 {
+    z-index: 10;
+    position: absolute;
+}
+.zx11 {
+    z-index: 11;
+    position: absolute;
+}
+.zx100 {
+    z-index: 100;
+    position: absolute;
+}
+.center {
+    text-align: center;
+}
+
+
+.wrap {
+    height:  100%;
+    width: 100%;
+    position: absolute;
+
+
+}
+.test{
+    position: absolute;
+    bottom: 10px;
+    text-align: center;
+    width: 100%;
+    color:#fff;
+    font-size: 18px;
+    z-index: 100;
+}
+@-webkit-keyframes fade-in {
+    0% {
+        opacity: 0;
+    }
+    100% {
+        opacity: 1;
+    }
+}
+@keyframes fade-in {
+    0% {
+        opacity: 0;
+    }
+    100% {
+        opacity: 1;
+    }
+}
+@-webkit-keyframes lineTop {
+    0% {
+        transform:translateY(0px);
+    }
+    100% {
+
+        transform:translateY(-632px);
+    }
+}
+@keyframes lineTop {
+    0% {
+        transform:translateY(0px);
+    }
+    100% {
+
+        transform:translateY(-632px);
+    }
+}
+@-webkit-keyframes lineBottom {
+    0% {
+        transform:translateY(-632px);
+    }
+    100% {
+
+        transform:translateY(0px);
+    }
+}
+@keyframes lineBottom {
+    0% {
+        transform:translateY(-632px);
+    }
+    100% {
+
+        transform:translateY(0px);
+    }
+}
+.s2_anim{
+    opacity: 0;
+    -webkit-animation: fade-in 3s linear 0s  2 alternate backwards;
+    animation: lineTop 3s linear 0s  2 alternate backwards;
+}
+.mask_bottom_anim_top{
+    -webkit-animation: lineTop 0.6s linear 0s  1 normal forwards;
+    animation: lineTop 0.6s linear 0s  1 normal forwards;
+}
+.mask_bottom_anim_bottom{
+    -webkit-animation: lineBottom 0.6s linear 0s  1 normal forwards;
+    animation: lineBottom 0.6s linear 0s  1 normal forwards;
+}
+.snow{
+    width: 100%;
+    height: 100%;
+
+    position: absolute;
+}
+.s3{
+    opacity: 0.8;
+}
+.smoke{
+    opacity: 1;
+}
+.foo{
+
+    width: 640px;
+    height: 1100px;
+}
+.loading_scene{
+    width: 100%;
+    height: 100%;
+    background-image: url("http://cdn2.qizyg.com/fans_only/img/bg_loading.png");
+    background-position: center top;
+    background-repeat: no-repeat;
+}
+.loading_anim {
+    -webkit-animation: animKey_loadin 1s steps(9) infinite;
+    animation: animKey_loadin 1s steps(9) infinite;
+    position: absolute;
+    left: 174px;
+    top: 400px;
+    width: 283px;
+    height: 100px;
+    background: url(http://cdn2.qizyg.com/fans_only/img/loading.png) no-repeat;
+    -webkit-background-size: 283px 900px;
+    background-size: 283px 900px;
+}
+.btn_redo_png {
+    background-image: url("http://cdn2.qizyg.com/fans_only/img/btn_redo.png");
+    position: fixed;
+    left: 146px;
+    /*top: 810px;*/
+    bottom:80px;
+    width: 132px;
+    height: 123px;
+
+}
+.btn_share_png {
+    background-image: url("http://cdn2.qizyg.com/fans_only/img/btn_share.png");
+    position: fixed;
+    left: 320px;
+    /*top: 800px;*/
+    bottom:80px;
+    width: 123px;
+    height: 133px;
+
+}
+.btn_play_png {
+    background-image: url("http://cdn2.qizyg.com/fans_only/img/btn_play.png");
+    position: fixed;
+    left: 146px;
+    /*top: 811px;*/
+    bottom:80px;
+    width: 133px;
+    height: 123px;
+
+}
+.btn_gift_png {
+    background-image: url("http://cdn2.qizyg.com/fans_only/img/btn_gift.png?v=1229");
+    position: fixed;
+    left: 320px;
+    /*top: 801px;*/
+    bottom:80px;
+    width: 124px;
+    height: 133px;
+
+}
+.btn_intro_png {
+    background-image: url("http://cdn2.qizyg.com/fans_only/img/btn_intro.png");
+    position: absolute;
+    left: 504px;
+    top: 29px;
+    width: 107px;
+    height: 23px;
+
+}
+.logo_png {
+    background-image: url("http://cdn2.qizyg.com/fans_only/img/logo.png");
+    position: absolute;
+    left: 21px;
+    top: 16px;
+    width: 203px;
+    height: 42px;
+
+}
+.btn_bottom_png {
+    background-image: url("http://cdn2.qizyg.com/fans_only/img/btn_bottom.png?v=2");
+    /*background-color: #ca2e37;*/
+    position: fixed;
+    left: 212px;
+    bottom: 12px;
+    width: 218px;
+    height: 49px;
+
+
+
+}
+
+
+.text_bottom{
+    color:#fff;
+    text-align: center;
+    line-height: 50px;
+}
+@-webkit-keyframes pulse {
+    /*from, to {*/
+        /*-webkit-transform: scale3d(1, 1, 1);*/
+        /*transform: scale3d(1, 1, 1)*/
+    /*}*/
+    /*50% {*/
+        /*-webkit-transform: scale3d(1.05, 1.05, 1.05);*/
+        /*transform: scale3d(1.05, 1.05, 1.05)*/
+    /*}*/
+    from, to {
+        /*-webkit-transform: scale3d(1, 1, 1);*/
+        /*transform: scale3d(1, 1, 1);*/
+        opacity:0.5
+    }
+    50% {
+        /*-webkit-transform: scale3d(1.05, 1.05, 1.05);*/
+        /*transform: scale3d(1.05, 1.05, 1.05);*/
+        opacity: 1;
+    }
+}
+@-webkit-keyframes shake {
+    from, to {
+        -webkit-transform: translate3d(0, 0, 0);
+        transform: translate3d(0, 0, 0);
+    }
+
+    5%, 10%, 15%, 20%, 25% {
+        -webkit-transform: translate3d(-5px, 0, 0);
+        transform: translate3d(-5px, 0, 0);
+    }
+
+    7.5%, 12.5%, 17.5%, 22.5% {
+        -webkit-transform: translate3d(5px, 0, 0);
+        transform: translate3d(5px, 0, 0);
+    }
+    30%{
+        -webkit-transform: translate3d(0, 0, 0);
+        transform: translate3d(0, 0, 0);
+    }
+
+}
+
+
+@keyframes pulse {
+    from, to {
+        /*-webkit-transform: scale3d(1, 1, 1);*/
+        /*transform: scale3d(1, 1, 1);*/
+        opacity:0.5
+    }
+    50% {
+        /*-webkit-transform: scale3d(1.05, 1.05, 1.05);*/
+        /*transform: scale3d(1.05, 1.05, 1.05);*/
+        opacity: 1;
+    }
+}
+
+.pulse {
+    animation: shake 4s linear 0s infinite alternate;
+    -webkit-animation: shake 4s linear 0s infinite alternate;
+    /*-webkit-animation-name: pulse;*/
+    /*animation-name: pulse;*/
+    /*animation-duration: 1s;*/
+    /*animation-delay: 2s;*/
+    /*animation-iteration-count: infinite;*/
+    /*-webket-animation-duration: 1s;*/
+    /*-webket-animation-delay: 2s;*/
+    /*-webket-animation-iteration-count: infinite;*/
+}
+.mask_share,.mask_intro{
+    width:100%;
+    height: 100%;
+    background: rgba(0,0,0,0.8);
+}
+.tip_share_png {
+    background-image: url("http://cdn2.qizyg.com/fans_only/img/tip_share.png");
+    position: absolute;
+    left: 321px;
+    top: 49px;
+    width: 249px;
+    height: 268px;
+
+}
+.mask_bottom{
+    width:100%;
+    height:632px;
+    background: rgba(0,0,0,0.8);
+    bottom: -632px;
+    position: fixed;
+  z-index: 100;
+
+}
+.mask_bottom img{
+    margin: auto;
+    display: block;
+
+}
+.btn_att_pai {
+    background-image: url("http://cdn2.qizyg.com/fans_only/img/btn_att_bottom.png");
+    position: absolute;
+    left: 137px;
+    top: 772px;
+    width: 369px;
+    height: 71px;
+
+}
+.intro_c{
+    padding: 45px;
+    line-height: 1.2em;
+}
+.intro_c p{
+    margin: 0;
+    padding: 5px 0;
+}
+.intro_c h2{
+    font-size: 1.2em;
+    text-align: center;
+    font-weight: normal;
+}
+.font1{
+    color: #d02e39;
+
+}
+.main{
+    display: none;}
+.loading{
+    position: absolute;
+    width: 100%;
+    height: 100%;
+}
+
+@-webkit-keyframes animKey_loadin {
+    0% {
+        background-position: 0 0;
+    }
+    100% {
+        background-position: 0 -900px;
+    }
+}
+
+.loading_num{
+    position: absolute;
+    width: 100%;
+    top:516px;
+    text-align: center;
+}
+.loading_text{
+    position: absolute;
+    width: 100%;
+    top:570px;
+    text-align: center;
+    font-size: 20px;
+    line-height: 1.5em;
+    opacity: 0.4;
+}
+.intro_h{
+    /*height: 600px;
+    overflow: scroll;
+    -webkit-overflow-scrolling: touch*/
+}
