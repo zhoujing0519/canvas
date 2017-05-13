@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>6.3-使用精灵绘制的时钟</title>
+</head>
+<body>
+	<canvas id="canvas" width="720" height="720">
+		Canvas not supported.
+	</canvas>
+</body>
+<script type="text/javascript" src="../js/sprite.js"></script>
+<script type="text/javascript" src="../js/requestNextAnimationFrame.js"></script>
+<script type="text/javascript">
+	var canvas = document.getElementById('canvas'),
+		context = canvas.getContext('2d'),
+
+		CLOCK_RADIUS = canvas.width/2 - 15,
+		HOUR_HAND_TRUNCATION = 35,
+
+	// Painter...............................................
+
+		ballPainter = {
+			paint: function(sprite, context){
+				var x = sprite.left + sprite.width/2,
+					y = sprite.top + sprite.height/2,
+					width = sprite.width,
+					height = sprite.height,
+					radius = sprite.width/2;
+
+				context.save();
+				context.beginPath();
+				context.arc(x, y, radius, 0, Math.PI * 2, false);
+				context.clip();
+
+				context.shadowColor = 'rgb(0, 0, 0)';
+				context.shadowOffsetX = -4;
+				context.shadowOffsetY = -4;
+				context.shadowBlur = 8;
+
+				context.fillStyle = 'rgba(218, 165, 32, 0.1)';
+				context.fill();
+
+				context.lineWidth = 2;
+				context.strokeStyle = 'rgb(100, 100, 195)';
+				context.stroke();
+
+				context.restore();
+			}
+		},
+
+	// Sprite....................................................
+
+		ball = new Sprite('ball', ballPainter);
+
+// Functions............................................................
+
+	function drawGrid(color, stepX, stepY){
+		context.lineWidth = 0.5;
+		context.strokeStyle = color;
+
+		for(var i = 0.5; i < canvas.width; i += stepX){
+			context.beginPath();
+			context.moveTo(i, 0);
+			context.lineTo(i, canvas.height);
+			context.stroke();
+		}
+
+		for(var j = 0.5; j < canvas.height; j += stepY){
+			context.beginPath();
+			context.moveTo(0, j);
+			context.lineTo(canvas.width, j);
+			context.stroke();
+		}
+	}
+
+	function drawHand(loc, isHour){
+		var angle = (Math.PI*2) * (loc/60) - Math.PI/2, // 360 * loc/60 - 180
+			handRadius = isHour ? CLOCK_RADIUS - HOUR_HAND_TRUNCATION : CLOCK_RADIUS,
+			lineEnd = {
+				x: canvas.width/2 + Math.cos(angle) * (handRadius - ball.width/2),
+				y: canvas.height/2 + Math.sin(angle) * (handRadius - ball.height/2)
+			};
+
+		context.beginPath();
+		context.moveTo(canvas.width/2, canvas.height/2);
+		context.lineTo(lineEnd.x, lineEnd.y);
+		context.stroke();
+
+		ball.left = canvas.width/2 + Math.cos(angle)*handRadius - ball.width/2;
+		ball.top = canvas.height/2 + Math.sin(angle)*handRadius - ball.height/2;
+
+		ball.paint(context);
+	}
+
+	function drawClock(){
+		drawClockFace();
+		drawHands();
+	}
+
+	function drawHands(){
+		var date = new Date(),
+			hour = date.getHours();
+
+		// 秒针
+		ball.width = 20;
+		ball.height = 20;
+		drawHand(date.getSeconds(), false);
+
+		// 分针
+		hour = hour > 12 ? hour - 12 : hour;
+		ball.width = 25;
+		ball.height = 25;
+		drawHand(date.getMinutes(), false);
+
+		// 时针
+		ball.width = 30;
+		ball.heihgt = 30;
+		drawHand(hour*5 + (date.getMinutes()/60)*5);
+
+		// 轴
+		ball.width = 10;
+		ball.heihgt = 10;
+		ball.left = canvas.width/2 - ball.width/2;
+		ball.top = canvas.heihgt/2 - ball.height/2;
+		ballPainter.paint(ball, context);
+	}
+
+	function drawClockFace(){
+		context.beginPath();
+		context.arc(canvas.width/2, canvas.height/2, CLOCK_RADIUS, 0, Math.PI*2, false);
+		context.save();
+
+		context.strokeStyle = 'rgba(0, 0, 0, 0.2)';
+		context.stroke();
+
+		context.restore();
+	}
+
+// Animation.................................................................
+
+	function animate(){
+		context.clearRect(0, 0, canvas.width, canvas.height);
+
+		drawGrid('lightgray', 10, 10);
+		drawClock();
+
+		window.requestNextAnimationFrame(animate);
+	}
+
+// Initialization...........................................................
+
+	drawGrid('lightgray', 10, 10);
+
+	window.requestNextAnimationFrame(animate);
+
+</script>
+</html>

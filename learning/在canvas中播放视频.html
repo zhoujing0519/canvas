@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>在canvas中播放视频</title>
+	<style>
+		body{
+			background: #ddd;
+		}
+		#canvas{
+			background-color: #fff;
+			/*border: thin solid darkgray;*/
+		}
+		#video{
+			display: none;
+		}
+		div{
+			width: 1024px;
+			height: 720px;
+			position: relative;
+		}
+		#playButton{
+			position: absolute;
+			left: 0;
+			bottom: 0;
+		}
+	</style>
+</head>
+<body>
+	<video id="video" src="videos/monokatari.mp4" poster controls></video>
+	<div>
+		<canvas id="canvas" width="1024" height="720">
+			Canvas not supported!
+		</canvas>
+		<button id="playButton">播放</button>
+	</div>
+</body>
+<script type="text/javascript">
+	var canvas = document.getElementById('canvas'),
+		context = canvas.getContext('2d'),
+		video = document.getElementById('video'),
+		playButton = document.getElementById('playButton');
+
+	function animate(){
+		if(!video.ended){
+			context.drawImage(video, 0, 0, canvas.width, canvas.height);
+			window.requestAnimationFrame(animate);
+		}
+	}
+
+	playButton.onclick = function(){
+		video.play();
+		animate();
+	};
+</script>
+</html>

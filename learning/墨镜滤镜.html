@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>墨镜滤镜</title>
+</head>
+<body>
+	<canvas id="cvs" width="720" height="540"></canvas>
+	<button id="btn-sunglass">Sunglass Mode</button>
+</body>
+<script type="text/javascript">
+	var image = new Image(),
+		cvs = document.getElementById('cvs'),
+		ctx = cvs.getContext('2d'),
+		btn_sunglass = document.getElementById('btn-sunglass'),
+		sunglass_on = false;
+		sunglass_filter = new Worker('js/sunglass_filter.js');
+
+// Functions.......................................................
+
+	function putSunglassesOn(){
+		sunglass_filter.postMessage(
+			ctx.getImageData(0, 0, cvs.width, cvs.height)
+		);
+
+		sunglass_filter.onmessage = function(event){
+			ctx.putImageData(event.data, 0, 0);
+		};
+	}
+
+	function drawOriginalImage(){
+		ctx.drawImage(image, 0, 0, image.width, image.height, 0, 0, cvs.width, cvs.height);
+	}
+
+// Event handlers...................................................
+
+	btn_sunglass.onclick = function(){
+		if(sunglass_on){
+			btn_sunglass.textContent = 'Sunglass On';
+			drawOriginalImage();
+			sunglass_on = false;
+		}else{
+			btn_sunglass.textContent = 'Sunglass Off';
+			putSunglassesOn();
+			sunglass_on = true;
+		}
+	};
+
+// Initialization.....................................................
+
+	image.src = 'images/bubles.jpg';
+	image.onload = function(){
+		drawOriginalImage();
+	};
+</script>
+</html>

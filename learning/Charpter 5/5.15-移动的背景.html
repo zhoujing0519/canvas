@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>5.15-移动的背景</title>
+	<style>
+		body{
+			background: #ddd;
+		}
+		#canvas{
+			position: absolute;
+			left: 10px;
+			top: 30px;
+			background: #fff;
+			cursor: crosshair;
+			margin-left: 10px;
+			margin-top: 10px;
+			-webkit-box-shadow: 4px 4px 8px rgba(0, 0, 0, 0.5);
+			-moz-box-shadow: 4px 4px 8px rgba(0, 0, 0, 0.5);
+			-ms-box-shadow: 4px 4px 8px rgba(0, 0, 0, 0.5);
+			box-shadow: 4px 4px 8px rgba(0, 0, 0, 0.5);
+		}
+		input{
+			margin-left: 15px;
+		}
+	</style>
+</head>
+<body>
+	<canvas id="canvas" width="640" height="640"></canvas>
+	<input id="animateButton" type="button" value="Animate">
+</body>
+<script type="text/javascript" src="../js/requestNextAnimationFrame.js"></script>
+<script type="text/javascript">
+	var canvas = document.getElementById('canvas'),
+		context = canvas.getContext('2d'),
+		animateButton = document.getElementById('animateButton'),
+		backgroundImage = new Image(),
+
+		paused = true,
+		lastTime = 0,
+		fps = 0,
+		backgroundOffset = 0,
+		backgroundVelocity = 120; // 30px/s
+
+// Functions.............................................................
+
+	function erase(){
+		context.clearRect(0, 0, canvas.width, canvas.height);
+	}
+
+	function draw(){
+		context.save();
+
+		backgroundOffset = backgroundOffset < canvas.height ? backgroundOffset + backgroundVelocity / fps : 0;
+
+		context.save();
+		context.translate(0, -backgroundOffset);
+
+		context.drawImage(backgroundImage, 0, 0);
+		context.drawImage(backgroundImage, 0, canvas.height);
+
+		context.restore();
+	}
+
+	function calculateFps(now){
+		var fps = 1000 / (now - lastTime);
+
+		lastTime = now;
+
+		return fps;
+	}
+
+	function animate(now){
+		if(now === undefined){
+			now = +new Date;
+		}
+
+		fps = calculateFps(now);
+
+		if(!paused){
+			erase();
+			draw();
+		}
+
+		requestNextAnimationFrame(animate);
+	}
+
+// Event handlers..........................................................
+
+	animateButton.onclick = function(e){
+		paused = paused ? false : true;
+
+		animateButton.value = paused ? 'Animate' : 'Pause';
+	};
+
+// Initialization..........................................................
+
+	backgroundImage.src = '../images/background.jpg';
+	backgroundImage.onload = function(e){
+		draw();
+	};
+
+	requestNextAnimationFrame(animate);
+</script>
+</html>

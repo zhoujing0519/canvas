@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>离屏Canvas动画</title>
+</head>
+<body>
+	<canvas id="canvas" width="720" height="540"></canvas>
+	<button id="btn-fade">Fade</button>
+</body>
+<script type="text/javascript">
+	var image = new Image(),
+		canvas = document.getElementById('canvas'),
+		context = canvas.getContext('2d'),
+		offscreenCanvas = document.createElement('canvas'),
+		offscreenContext = offscreenCanvas.getContext('2d'),
+		btnFade = document.getElementById('btn-fade'),
+		imagedata,
+		offscreenImagedata,
+		interval = null;
+
+// Functions.................................................
+
+	function increaseTransparency(imagedata, steps){
+		var alpha,
+			currentAlpha,
+			step,
+			length = imagedata.data.length;
+
+		for(var i = 3; i < length; i += 4){ // For every alpha component
+			alpha = offscreenImagedata.data[i];
+
+			if(alpha > 0){
+				currentAlpha = imagedata.data[i];
+				step = Math.ceil(alpha / steps);
+			}
+
+			if(currentAlpha + step <= alpha){ // Not at original alpha yet
+				imagedata.data[i] += step; // Increase transparency
+			}else{
+				imagedata.data[i] = alpha; // End: original transparency
+			}
+		}
+	}
+
+	function fadeIn(context, imagedata, steps, millisecondsPerStep){
+		var frame = 0;
+
+		for(var i = 3; i < imagedata.data.length; i += 4){ // For every alpha
+			imagedata.data[i] = 0;
+		}
+
+		interval = setInterval(function(){ // Every millisecondsPerStep
+			frame++;
+
+			if(frame > steps){
+				clearInterval(interval);
+			}else{
+				increaseTransparency(imagedata, steps);
+				context.putImageData(imagedata, 0, 0);
+			}
+		}, millisecondsPerStep);
+	}
+
+// Animation............................................................
+
+	function animationComplete(){
+		setTimeout(function(){
+			context.clearRect(0, 0, canvas.width, canvas.height);
+		}, 1000);
+	}
+
+// Event handlers.........................................................
+
+	btnFade.onclick = function(){
+		offscreenImagedata = offscreenContext.getImageData(0, 0, canvas.width, canvas.height);
+
+		fadeIn(context, offscreenContext.getImageData(0, 0, canvas.width, canvas.height), 50, 1000 / 60);
+		// animationComplete();
+	};
+
+// Initialization........................................................
+
+	image.src = 'images/bubles.jpg';
+	image.onload = function(){
+		offscreenCanvas.width = canvas.width;
+		offscreenCanvas.height = canvas.height;
+		offscreenContext.drawImage(image, 0, 0);
+	};
+</script>
+</html>

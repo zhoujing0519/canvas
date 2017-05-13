@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>浮雕滤镜</title>
+</head>
+<body>
+	<canvas id="cvs" width="720" height="540"></canvas>
+	<button id="btn-emboss">Emboss</button>
+</body>
+<script type="text/javascript">
+	var image = new Image(),
+		cvs = document.getElementById('cvs'),
+		ctx = cvs.getContext('2d'),
+		btn_emboss = document.getElementById('btn-emboss'),
+		embossed = false;
+
+// Functions....................................................................
+
+	function emboss(){
+		var imageData, data, length, width, index;
+
+		imageData = ctx.getImageData(0, 0, cvs.width, cvs.height);
+		data = imageData.data;
+		width = imageData.width;
+		length = data.length,
+		index = 3;
+
+		for(var i = 0; i < length; i++){	//Loop through every pixel
+			// If we won't overrun the bounds of the array
+			if(i <= length - width * 4){
+				// If it's not an alpha
+				if((i + 1) % 4 !== 0){
+					// Use imageData.width instead of the width you pass to imageData().
+					// Most of the time the two values are the same, but if the browser uses multiple device pixels per CSS pixel, only imageData.width represents the true width of the image data.
+
+					// If it's the last pixel in the row, there is no pixel to the right, so copy previous pixel's values.
+					if((i + 4) % (width * 4) == 0){
+						data[i] = data[i - 4];
+						data[i + 1] = data[i - 3];
+						data[i + 2] = data[i - 2];
+						data[i + 3] = data[i - 1];
+						i += 4;
+					}else{
+						data[i] = 255 / 2	// Average value
+								+ 2 * data[i]	//Current pixel
+								- data[i + 4]	//Next pixel
+								- data[i + width * 4];	//Pixel underneath
+					}
+				}
+			}else{	//Last row, no pixels underneath, so copy pixel above.
+				if((i + 1) % 4 !== 0){
+					data[i] = data[i - width * 4];
+				}
+			}
+		}
+
+		ctx.putImageData(imageData, 0, 0);
+	}
+
+	function drawOriginalImage(){
+		ctx.drawImage(image, 0, 0, image.width, image.height, 0, 0, cvs.width, cvs.height);
+	}
+
+// Event handler.................................................................................
+
+	btn_emboss.onclick = function(){
+		if(embossed){
+			btn_emboss.textContent = 'Emboss';
+			drawOriginalImage();
+			embossed = false;
+		}else{
+			btn_emboss.textContent = 'Original Image';
+			emboss();
+			embossed = true;
+		}
+	};
+
+// Initialization....................................................................................
+
+	image.src = 'images/bubles.jpg';
+	image.onload = function(){
+		drawOriginalImage();
+	};
+</script>
+</html>

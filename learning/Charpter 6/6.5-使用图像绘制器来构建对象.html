@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>6.5-使用图像绘制来构建精灵对象</title>
+</head>
+<body>
+	<canvas id="canvas" width="600" height="600">
+		Canvas not supported.
+	</canvas>
+</body>
+<script type="text/javascript" src="../js/requestNextAnimationFrame.js"></script>
+<script type="text/javascript" src="../js/sprite.js"></script>
+<script type="text/javascript" src="../js/imagePainter.js"></script>
+<script type="text/javascript">
+	var canvas = document.getElementById('canvas'),
+		context = canvas.getContext('2d'),
+
+		bomb = new Sprite('bomb', new ImagePainter('../images/background.jpg')),
+
+		BOMB_LEFT = 220,
+		BOMB_TOP = 80,
+		BOMB_WIDTH = 180,
+		BOMB_HEIGHT = 130;
+
+	function animate(){
+		context.clearRect(0, 0, canvas.width, canvas.height);
+		bomb.paint(context);
+		window.requestNextAnimationFrame(animate);		
+	}
+
+	bomb.left = BOMB_LEFT;
+	bomb.top = BOMB_TOP;
+	bomb.width = BOMB_WIDTH;
+	bomb.height = BOMB_HEIGHT;
+
+	window.requestNextAnimationFrame(animate);
+</script>
+</html>

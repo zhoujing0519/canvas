@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>动画初探</title>
+</head>
+<body>
+	<canvas id="canvas" width="720" height="540"></canvas>
+	<button id="fade-button">淡出</button>
+</body>
+<script type="text/javascript">
+	var image = new Image(),
+		canvas = document.getElementById('canvas'),
+		context = canvas.getContext('2d'),
+		fade_button = document.getElementById('fade-button'),
+		original_imagedata = null,
+		interval = null;
+
+// 	Functions......................................................
+
+	function increaseTransparency(imagedata, steps){
+		var alpha,
+			current_alpha,
+			step,
+			length = imagedata.data.length;
+
+		for(var i = 3; i < length; i += 4){
+			alpha = original_imagedata.data[i];
+
+			// 尚未透明
+			if(alpha > 0 && imagedata.data[i] > 0){
+				current_alpha = imagedata.data[i];
+				step = Math.ceil(alpha / steps);
+
+				// 当前透明度任然比速度大
+				if(current_alpha - step > 0){
+					imagedata.data[i] -= step; //加快透明化
+				}else{
+					imagedata.data[i] = 0; //完全透明
+				}
+			}
+		}
+	}
+
+	function fadeOut(context, imagedata, x, y, steps, millisecondsPerStep){
+		var frame = 0,
+			length = imagedata.data.length;
+
+		interval = setInterval(function(){
+			frame++;
+
+			if(frame > steps){ //动画结束
+				clearInterval(interval);
+				animationComplete();
+			}else{
+				increaseTransparency(imagedata, steps);
+				context.putImageData(imagedata, x, y);
+			}
+		}, millisecondsPerStep);
+	}
+
+// Animations...............................................................
+
+	function animationComplete(){
+		setTimeout(function(){
+			context.drawImage(image, 0, 0, canvas.width, canvas.height);
+		}, 1000);
+	}
+
+// Event handlers............................................................
+
+	fade_button.onclick = function(){
+		fadeOut(context, context.getImageData(0, 0, canvas.width, canvas.height), 0, 0, 20, 1000 / 60);
+	};
+
+// Initialization.............................................................
+
+	image.src = 'images/bubles.jpg';
+	image.onload = function(){
+		context.drawImage(image, 0, 0, canvas.width, canvas.height);
+		original_imagedata = context.getImageData(0, 0, canvas.width, canvas.height);
+	};
+</script>
+</html>

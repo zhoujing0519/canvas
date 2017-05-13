@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>6.2-简单的精灵演示程序</title>
+</head>
+<body>
+	<canvas id="canvas" width="640" height="640">
+		Canvas not supported.
+	</canvas>
+</body>
+<script type="text/javascript" src="../js/sprite.js"></script>
+<script type="text/javascript">
+	var canvas = document.getElementById('canvas'),
+		context = canvas.getContext('2d'),
+
+		RADIUS = 75,
+		ball = new Sprite('ball', {
+			paint: function(sprite, context){
+				context.beginPath();
+				context.arc(sprite.left, sprite.top, RADIUS, 0, Math.PI * 2, false);
+				context.clip();
+
+				context.shadowColor = 'rgb(0, 0, 0)';
+				context.shadowOffsetX = -4;
+				context.shadowOffsetY = -4;
+				context.shadowBlur = 8;
+
+				context.lineWidth = 2;
+				context.strokeStyle = 'rgb(100, 100, 195)';
+				context.fillStyle = 'rgba(30, 144, 255, 0.15)';
+
+				context.fill();
+				context.stroke();
+			}
+		});
+
+// Functions.................................................................
+
+	function drawGrid(color, stepX, stepY){
+		context.lineWidth = 0.5;
+		context.strokeStyle = color;
+
+		for(var i = 0.5; i <= canvas.width; i += stepX){
+			context.beginPath();
+			context.moveTo(i, 0);
+			context.lineTo(i, canvas.height);
+			context.stroke();
+		}
+
+		for(var j = 0.5; j <= canvas.height; j += stepY){
+			context.beginPath();
+			context.moveTo(0, j);
+			context.lineTo(canvas.width, j);
+			context.stroke();
+		}
+	}
+
+// Initialization.............................................................
+
+	drawGrid('lightgray', 10, 10);
+	ball.left = 320;
+	ball.top = 160;
+	ball.paint(context);
+
+</script>
+</html>

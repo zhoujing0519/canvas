@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>5.19-秒表</title>
+</head>
+<body>
+	<canvas id="canvas" width="640" height="640">
+		Canvas not supported.
+	</canvas>
+	<input id="startStopButton" type="button" value="Start">
+	<input id="secondsInput" type="text" value="30">
+</body>
+<script type="text/javascript" src="../js/stopwatch.constructor.js"></script>
+<script type="text/javascript" src="../js/requestNextAnimationFrame.js"></script>
+<script type="text/javascript">
+	var stopwatch = new Stopwatch(),
+		secondsInput = document.getElementById('secondsInput'),
+		startStopButton = document.getElementById('startStopButton'),
+		timerSetting;
+
+// Event handlers......................................................................
+
+	startStopButton.onclick = function(e){
+		if(this.value === 'Start'){
+			stopwatch.start();
+			this.value = 'Stop';
+			requestNextAnimationFrame(animate);
+			secondsInput.disabled = true;
+		}else{
+			stopwatch.stop();
+			timerSetting = parseFloat(secondsInput.value);
+			startStopButton.value = 'Start';
+			secondsInput.disabled = false;
+		}
+
+		stopwatch.reset();
+	};
+
+	function animate(){
+		if(stopwatch.isRunning() && stopwatch.getElapsedTime() > timerSetting * 1000){
+			// Animation is over.
+			stopwatch.stop();
+			startStopButton.value = 'Start';
+			secondsInput.disabled = false;
+			secondsInput.value = 0;
+		}else if(stopwatch.isRunning()){
+			// Animation is running.
+			// redraw();
+			requestNextAnimationFrame(animate);
+		}
+	}
+</script>
+</html>

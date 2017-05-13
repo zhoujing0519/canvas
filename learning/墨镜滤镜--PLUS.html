@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Document</title>
+</head>
+<body>
+	<canvas id="cvs" width="720" height="540"></canvas>
+	<button id="btn-sunglass">Sunglasses</button>
+</body>
+<script type="text/javascript">
+	var image = new Image(),
+		cvs = document.getElementById('cvs'),
+		ctx = cvs.getContext('2d'),
+		// 离屏canvas
+		offscreenCanvas = document.createElement('canvas'),
+		offscreenContext = offscreenCanvas.getContext('2d'),
+		// 墨镜按钮
+		btn_sunglass = document.getElementById('btn-sunglass'),
+		sunglass_on = false,
+		sunglass_filter = new Worker('js/sunglass_filter.js'),
+		// 镜片连接线半径
+		lens_radius = cvs.width / 5;
+
+// Functions........................................................
+
+	function drawLenses(leftLensLocation, rightLensLocation){
+		ctx.save();
+
+		ctx.beginPath();
+		// 左边镜片
+		ctx.arc(leftLensLocation.x, leftLensLocation.y, lens_radius, 0, Math.PI * 2, false);
+		ctx.stroke();
+		ctx.moveTo(rightLensLocation.x, rightLensLocation.y);
+		// 右边镜片
+		ctx.arc(rightLensLocation.x, rightLensLocation.y, lens_radius, 0, Math.PI * 2, false);
+		ctx.stroke();
+
+		ctx.clip();
+		ctx.drawImage(offscreenCanvas, 0, 0, cvs.width, cvs.height);
+
+		ctx.restore();
+	}
+
+	function drawWire(center){
+		ctx.beginPath();
+		
+		ctx.moveTo(center.x - lens_radius / 4, center.y - lens_radius / 2);
+		ctx.quadraticCurveTo(
+			center.x, 
+			center.y - lens_radius + 20, 
+			center.x + lens_radius / 4, 
+			center.y - lens_radius / 2
+		);
+		
+		ctx.stroke();
+	}
+
+	function drawConnectors(center){
+		ctx.beginPath();
+
+		ctx.fillStyle = 'silver';
+		ctx.strokeStyle = 'rgba(0, 0, 0, 0.4)';
+		ctx.lineWidth = 2;
+
+		ctx.arc(center.x - lens_radius / 4, center.y - lens_radius / 2, 4, 0, Math.PI * 2, false);
+		ctx.fill();
+		ctx.stroke();
+
+		ctx.beginPath();
+
+		ctx.arc(center.x + lens_radius / 4, center.y - lens_radius / 2, 4, 0, Math.PI * 2, false);
+		ctx.fill();
+		ctx.stroke();
+	}
+
+	function putSunglassesOn(){
+		var imageData,
+			center = {
+				x: cvs.width / 2,
+				y: cvs.height / 2
+			},
+			leftLensLocation = {
+				x: center.x - lens_radius - 10,
+				y: center.y
+			},
+			rightLensLocation = {
+				x: center.x + lens_radius + 10,
+				y: center.y
+			};
+
+		imageData = ctx.getImageData(0, 0, cvs.width, cvs.height);
+
+		sunglass_filter.postMessage(imageData);
+		sunglass_filter.onmessage = function(event){
+			offscreenContext.putImageData(event.data, 0, 0);
+			drawLenses(leftLensLocation, rightLensLocation);
+			drawWire(center);
+			drawConnectors(center);
+		};
+	}
+
+	function drawOriginalImage(){
+		ctx.drawImage(image, 0, 0, image.width, image.height, 0, 0, cvs.width, cvs.height);
+	}
+
+// Event handlers.............................................................................
+
+	btn_sunglass.onclick = function(){
+		if(sunglass_on){
+			btn_sunglass.textContent = 'Sunglasses';
+			drawOriginalImage();
+			sunglass_on = false;
+		}else{
+			btn_sunglass.textContent = 'Original Image';
+			putSunglassesOn();
+			sunglass_on = true;
+		}
+	};
+
+	offscreenCanvas.width = cvs.width;
+	offscreenCanvas.height = cvs.height;
+
+// Initialization..............................................................................
+
+	image.src = 'images/bubles.jpg';
+	image.onload = function(){
+		drawOriginalImage();
+	};
+</script>
+</html>

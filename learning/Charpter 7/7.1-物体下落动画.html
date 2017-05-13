@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Document</title>
+</head>
+<body>
+	<canvas id="canvas"></canvas>
+</body>
+<script type="text/javascript">
+	var canvas = document.getElementById('canvas'),
+		context = canvas.getContext('2d'),
+
+		GRAVITY_FORCE = 9.81, // 9.81m/s/s
+		PLATFORM_HEIGHT_IN_METERS = 10, // 10 meters
+
+		pixelsPerMeter = (canvas.height - LEDGE_TOP) / PLATFORM_HEIGHT_IN_METERS,
+
+		// moveBall is a behavior -- an object with an execute(sprite, context, time) method -- that's attached to the ball.
+		// When the application calls ball.update(), the ball sprite executes the moveBall behavior.
+		// The sprite passed to execute() is the ball.
+
+		moveBall = {
+			execute: function(sprite, context, time){
+				if(fallingAnimationTimer.isRunning()){ // Ball is falling
+
+					// Reposition the ball at steady pixels/second rate
+					sprite.top += sprite.velocityY / fps;
+
+					// Recalculate the ball's velocityY
+					sprite.velocityY = GRAVITY_FORCE * (fallingAnimationTimer.getElapsedTime() / 1000) * pixelsPerMeter;
+
+					if(sprite.top > canvas.height){
+						stopFalling();
+					}
+				}
+			},
+		},
+
+		function stopFalling(){
+			fallingAnimationTimer.stop();
+
+			ball.left = LEDGE_LEFT + LEDGE_WIDTH / 2 - BALL_RADIUS;
+			ball.top = LEDGE_TOP - BALL_RADIUS * 2;
+			ball.velocityY = 0;
+		},
+
+		// Create the animation timer and the ball sprite.
+		fallingAnimationTimer = new AnimationTimer(),
+
+		ball = new Sprite(
+			'ball',
+			{
+				paint: function(sprite, context){}
+			},
+			[moveBall]
+		);
+</script>
+</html>

@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>在canvas中播放处理视频</title>
+	<style>
+		body{
+			background: #ddd;
+		}
+		.video-container{
+			width: 1024px;
+			height: 720px;
+			position: relative;
+		}
+		#canvas{
+			background-color: #fff;
+		}
+		#video{
+			display: none;
+		}
+		.floatingControls{
+			position: absolute;
+			left: 175px;
+			bottom: -30px;
+		}
+	</style>
+</head>
+<body>
+	<div class="video-container">
+		<video id="video" src="videos/monokatari.mp4" poster controls></video>
+		<canvas id="canvas" width="1024" height="720">
+			Canvas not supported!
+		</canvas>
+		<div id="controls" class="floatingControls">
+			<input id="controlButton" type="button" value="Play">
+			<input id="colorCheckbox" type="checkbox" chekced> Color
+			<input id="flipCheckbox" type="checkbox"> Flip
+		</div>
+	</div>
+</body>
+<script type="text/javascript">
+	var canvas = document.getElementById('canvas'),
+		context = canvas.getContext('2d'),
+		offscreenCanvas = document.createElement('canvas'),
+		offscreenContext = offscreenCanvas.getContext('2d'),
+		video = document.getElementById('video'),
+		controlButton = document.getElementById('controlButton'),
+		colorCheckbox = document.getElementById('colorCheckbox'),
+		flipCheckbox = document.getElementById('flipCheckbox'),
+		imageData,
+		poster = new Image();
+
+// Functions............................................................
+
+	function removeColor(){
+		var data,
+			width,
+			average;
+
+		imageData = offscreenContext.getImageData(0, 0, offscreenCanvas.width, offscreenCanvas.height);
+		data = imageData.data;
+		width = data.width;
+
+		for(var i = 0; i < data.length - 4; i += 4){
+			average = (data[i] + data[i + 1] + data[i + 2]) / 3;
+
+			data[i] = data[i + 1] = data[i + 2] = average;
+		}
+
+		offscreenContext.putImageData(imageData, 0, 0);
+	}
+
+	function drawFlipped(){
+		context.save();
+
+		context.translate(canvas.width / 2, canvas.height / 2);
+		context.rotate(Math.PI);
+		context.translate(- canvas.width / 2, - canvas.height / 2);
+		context.draw(offscreenCanvas, 0, 0);
+
+		context.restore();
+	}
+
+	function nextVideoFrame(){
+		if(video.ended){
+			controlButton.value = 'Play';
+		}else{
+			offscreenContext.drawImage(video, 0, 0, offscreenCanvas.width, offscreenCanvas.height);
+
+			if(!colorCheckbox.chekced){
+				removeColor();
+			}else{
+				offscreenContext.drawImage(video, 0, 0, offscreenCanvas.width, offscreenCanvas.height);
+			}
+
+			if(flipCheckbox.chekced){
+				drawFlipped();
+			}else{
+				context.drawImage(offscreenCanvas, 0, 0);
+			}
+
+			window.requestAnimationFrame(nextVideoFrame);
+		}
+	}
+
+	function startingPlay(){
+		video.play();
+		window.requestAnimationFrame(nextVideoFrame);
+	}
+
+	function stopPlaying(){
+		video.pause();
+	}
+
+// Event handlers.............................................................
+
+	controlButton.onclick = function(e){
+		if(controlButton.value === 'Play'){
+			startingPlay();
+			controlButton.value = 'Pause';
+		}else{
+			stopPlaying();
+			controlButton.value = 'Play';
+		}
+	};
+
+	poster.onload = function(e){
+		context.drawImage(poster, 0, 0, canvas.width, canvas.height);
+		
+	};
+
+// Initialization............................................................
+
+	poster.src = 'images/bubles.jpg';
+
+	offscreenCanvas.width = canvas.width;
+	offscreenCanvas.height = canvas.height;
+</script>
+</html>

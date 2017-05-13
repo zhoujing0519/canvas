@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>负片滤镜and黑白滤镜</title>
+</head>
+<body>
+	<canvas id="canvas"></canvas>
+	<button id="negativeButton">负片滤镜(Negative)</button>
+	<label for="drawInColorToggleCheckbox"><input type="checkbox" id="drawInColorToggleCheckbox" checked>drawInColorToggleCheckbox</label>
+</body>
+<script type="text/javascript">
+	var image = new Image(),
+		canvas = document.getElementById('canvas'),
+		context = canvas.getContext('2d'),
+		negativeButton = document.getElementById('negativeButton'),
+		drawInColorToggleCheckbox = document.getElementById('drawInColorToggleCheckbox');
+
+	// 修改为黑白颜色
+	function drawInBlackAndWhite(){
+		var data = undefined,
+			i = 0;
+
+		var imageData = context.getImageData(0, 0, canvas.width, canvas.height),
+			data = imageData.data;
+
+		for(var i = 0; i < data.length - 4; i += 4){
+			var average = (data[i] + data[i + 1] + data[i + 2]) / 3;
+
+			data[i] = average;
+			data[i + 1] = average;
+			data[i + 2] = average;
+		}
+
+		context.putImageData(imageData, 0, 0);
+	}
+
+	// 恢复为彩色
+	function drawInColor(image){
+		context.drawImage(image, 0, 0, image.width, image.height, 0, 0, canvas.width, canvas.height);
+	}
+
+	negativeButton.onclick = function(){
+		var imageData = context.getImageData(0, 0, canvas.width, canvas.height),
+			data = imageData.data;
+
+		for(var i = 0; i < data.length - 4; i += 4){
+			data[i] = 255 - data[i];
+			data[i + 1] = 255 - data[i + 1];
+			data[i + 2] = 255 - data[i + 2];
+		}
+
+		context.putImageData(imageData, 0, 0);
+	};
+
+	drawInColorToggleCheckbox.onclick = function(){
+		if(drawInColorToggleCheckbox.checked){
+			drawInColor(image);
+		}else{
+			drawInBlackAndWhite();
+		}
+	};
+
+	image.src = 'images/bubles.jpg';
+	image.onload = function(){
+		drawInColor(image);
+	};
+</script>
+</html>
